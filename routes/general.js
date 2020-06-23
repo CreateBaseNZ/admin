@@ -35,6 +35,13 @@ const adminAccess = (req, res, next) => {
 ROUTES
 =========================================================================================*/
 
+// @route     Get /
+// @desc
+// @access    Admin
+router.get("/", (req, res) => {
+  res.sendFile("home.html", routeOptions);
+});
+
 // @route     Get /file
 // @desc
 // @access    Admin
