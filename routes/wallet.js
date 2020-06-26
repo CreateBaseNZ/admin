@@ -82,6 +82,13 @@ router.post("/wallet/bankTransfer", adminContent, async (req, res) => {
   } catch (error) {
     return res.send(error);
   }
+  // UPDATE CUSTOMERS CHECKEDOUT ORDERS
+  const query = { accountId: account._id, status: "checkedout" };
+  try {
+    await Order.process(query);
+  } catch (error) {
+    return res.send(error);
+  }
   // SUCCESS HANDLER
   return res.send({ status: "succeeded", content: "wallet top-up was successful" });
 });

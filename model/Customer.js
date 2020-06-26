@@ -54,7 +54,7 @@ const CustomerSchema = new Schema({
     default: ""
   },
   address: {
-    type: AddressSchema
+    type: AddressSchema, default: {}
   },
   subscription: {
     mail: {

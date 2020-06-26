@@ -62,10 +62,19 @@ const AccountSchema = new Schema({
     }
   },
   wallet: {
-    code: { type: String, required: true },
+    code: {
+      type: String,
+      required: true
+    },
     bank: {
-      number: { type: String, default: "" },
-      status: { type: Boolean, default: false }
+      number: {
+        type: String,
+        default: ""
+      },
+      status: {
+        type: Boolean,
+        default: false
+      }
     }
   }
 });
