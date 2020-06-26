@@ -35,12 +35,32 @@ const adminAccess = (req, res, next) => {
 ROUTES
 =========================================================================================*/
 
-// @route     Get /
+/* ----------------------------------------------------------------------------------------
+ACCOUNT
+---------------------------------------------------------------------------------------- */
+
+// @route     POST /login
+// @desc
+// @access    ADMIN
+router.post("/login", passport.authenticate("local-admin-login", {
+  successRedirect: "/", failureRedirect: "/login"
+}))
+
+/* ----------------------------------------------------------------------------------------
+NAVIGATION
+---------------------------------------------------------------------------------------- */
+
+// @route     GET /
 // @desc
 // @access    Admin
 router.get("/", (req, res) => {
   res.sendFile("home.html", routeOptions);
 });
+
+// @route     GET /login
+// @desc
+// @access    Admin
+router.get("/login", (req, res) => res.sendFile("login.html", routeOptions));
 
 // @route     Get /file
 // @desc

@@ -18,9 +18,7 @@ const Order = require("./../model/Order.js");
 SESSIONS
 =========================================================================================*/
 
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
+passport.serializeUser((user, done) => done(null, user.id));
 
 passport.deserializeUser((id, done) => {
   Account.findById(id, (err, user) => {
@@ -32,7 +30,7 @@ passport.deserializeUser((id, done) => {
 PASSPORT - LOCAL STRATEGY - CUSTOMER SIGNUP
 =========================================================================================*/
 
-const LocalCustomerSignup = new LocalStrategy(
+const LocalAdminSignup = new LocalStrategy(
   {
     // By default, local strategy uses username and password, we will override with email
     usernameField: "email",
@@ -102,13 +100,13 @@ const LocalCustomerSignup = new LocalStrategy(
   }
 );
 // Enable use of the local strategy
-passport.use("local-customer-signup", LocalCustomerSignup);
+passport.use("local-admin-signup", LocalAdminSignup);
 
 /*=========================================================================================
 PASSPORT - LOCAL STRATEGY - CUSTOMER LOGIN
 =========================================================================================*/
 
-const LocalCustomerLogin = new LocalStrategy(
+const LocalAdminLogin = new LocalStrategy(
   {
     // By default, local strategy uses username and password, we will override with email
     usernameField: "email",
@@ -121,6 +119,8 @@ const LocalCustomerLogin = new LocalStrategy(
     } catch (error) {
       return done(null, false);
     }
+    // CHECK IF USER IS AN ADMIN
+    if (account.type !== "admin") return done(null, false);
     // MATCH THE ENTERED PASSWORD WITH THE ACCOUNTS PASSWORD
     let match;
     try {
@@ -135,7 +135,7 @@ const LocalCustomerLogin = new LocalStrategy(
   }
 );
 // Enable use of the local strategy
-passport.use("local-customer-login", LocalCustomerLogin);
+passport.use("local-admin-login", LocalAdminLogin);
 
 /*=========================================================================================
 END
