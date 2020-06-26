@@ -83,6 +83,11 @@ router.get("/discount", adminAccess, (req, res) => {
   res.sendFile("discount.html", routeOptions);
 });
 
+// @route     GET /wallet
+// @desc    
+// @access    ADMIN
+router.get("/wallet", adminAccess, (req, res) => res.sendFile("wallet.html", routeOptions));
+
 /*=========================================================================================
 EXPORT ROUTE
 =========================================================================================*/

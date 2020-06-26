@@ -9,10 +9,17 @@
 
 <body>
   <form id="bank-transfer">
-    <input type="text" name="code">
-    <input type="number" name="amount">
+    <input type="number" name="code" id="bank-transfer-code">
+    <input type="number" name="amount" id="bank-transfer-amount">
   </form>
-  <button>Bank Transfer</button>
+  <button id="bank-transfer-button" onclick="wallet.bankTransfer();">Bank Transfer</button>
+
+  <!-- ==========================JS========================== -->
+  <!-- -----------------------SOURCED------------------------ -->
+  <script async src="https://js.stripe.com/v3/"></script>
+  <script async src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <!-- ------------------------CUSTOM------------------------ -->
+  <script async src="/public/javascripts/wallet.js"></script>
 </body>
 
 </html>

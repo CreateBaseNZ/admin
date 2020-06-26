@@ -95,7 +95,7 @@ DEPOSIT
 // @FUNC  bankTransfer
 // @TYPE  STATIC - PROMISE - ASYNC
 // @DESC  
-TransactionSchema.statics.bankTransfer = function (customerId, amountOne) {
+TransactionSchema.statics.bankTransfer = function (accountId, amountOne) {
   return new Promise(async (resolve, reject) => {
     // DECLARE VARIABLES
     const currentDate = moment().tz("Pacific/Auckland").format();
@@ -104,14 +104,14 @@ TransactionSchema.statics.bankTransfer = function (customerId, amountOne) {
     const adminEmail = "carlvelasco96@gmail.com"; // TEMPORARY
     let admin;
     try {
-      admin = Account.findOne({ type: "admin", email: adminEmail });
+      admin = await Account.findOne({ type: "admin", email: adminEmail });
     } catch (error) {
       return reject({ status: "error", content: error });
     }
     // CREATE THE BANK TRANSFER TICKET
     const serviceOne = "deposit";
     const typeOne = "bankTransfer";
-    const entityOne = { sender: customerId, receiver: admin._id };
+    const entityOne = { sender: accountId, receiver: admin._id };
     // create the bank transfer instance
     let bankTransfer = new this({
       service: serviceOne, type: typeOne,
@@ -121,7 +121,7 @@ TransactionSchema.statics.bankTransfer = function (customerId, amountOne) {
     const bonusRate = 20; // $1 per $20 dollars deposit
     const serviceTwo = "bonus";
     const typeTwo = "bankTransfer";
-    const entityTwo = { sender: admin._id, receiver: customerId };
+    const entityTwo = { sender: admin._id, receiver: accountId };
     const amountTwo = Math.floor(amountOne / bonusRate);
     // create the bonus bank transfer instance
     let bonus = new this({
