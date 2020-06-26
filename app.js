@@ -59,9 +59,7 @@ SETUP AUTHENTICATION (PASSPORT JS)
 
 app.use(expressSession({
   secret: process.env.COOKIES_SECRET_KEY, saveUninitialized: true,
-  resave: true, rolling: true, sameSite: "none", cookie: {
-    domain: process.env.DOMAIN
-  }
+  resave: true, rolling: true, sameSite: "none"
 }));
 
 app.use(passport.initialize());
