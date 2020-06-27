@@ -120,7 +120,7 @@ TransactionSchema.statics.bankTransfer = function (customerId, amountOne) {
     const adminEmail = "carlvelasco96@gmail.com"; // TEMPORARY
     let admin;
     try {
-      admin = Account.findOne({ type: "admin", email: adminEmail });
+      admin = await Account.findOne({ type: "admin", email: adminEmail });
     } catch (error) {
       return reject({ status: "error", content: error });
     }
@@ -177,7 +177,7 @@ TransactionSchema.statics.onlinePayment = function (sender, amount) {
     const adminEmail = "carlvelasco96@gmail.com"; // TEMPORARY
     let admin;
     try {
-      admin = Account.findOne({ type: "admin", email: adminEmail });
+      admin = await Account.findOne({ type: "admin", email: adminEmail });
     } catch (error) {
       return reject({ status: "error", content: error });
     }
