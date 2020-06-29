@@ -7,14 +7,35 @@
   <title>Orders • Admin • CreateBase</title>
 </head>
 
-<body>
+<body onload="orders.initialise();">
+  <!-- ====================ACTIVE ORDERS===================== -->
+
+  <h1>ACTIVE</h1>
+
   <!-- ======================VALIDATED======================= -->
 
-  <div id="orders-validated"></div>
+  <div id="orders-validated">
+    <h2>VALIDATED</h2>
+    <div id="orders-validated-container"></div>
+  </div>
 
   <!-- ========================BUILT========================= -->
 
-  <div id="orders-built"></div>
+  <div id="orders-built">
+    <h2>BUILT</h2>
+    <div id="orders-built-container"></div>
+  </div>
+
+  <!-- ====================PASSIVE ORDERS==================== -->
+
+  <h1>PASSIVE</h1>
+
+  <!-- ======================CHECKEDOUT====================== -->
+
+  <div id="orders-checkedout">
+    <h2>CHECKEDOUT</h2>
+    <div id="orders-checkedout-container"></div>
+  </div>
 
   <!-- ==========================JS========================== -->
   <!-- -----------------------SOURCED------------------------ -->

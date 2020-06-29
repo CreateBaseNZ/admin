@@ -65,7 +65,7 @@ router.get("/admin/make/fetch", adminAccess, async (req, res) => {
   return;
 });
 
-router.post("/admin/make/update/price", adminAccess, async (req, res) => {
+router.post("/make/update-price", adminAccess, async (req, res) => {
   // Declare variables
   const makeId = mongoose.Types.ObjectId(req.body.id);
   const price = req.body.price;

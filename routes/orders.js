@@ -15,6 +15,7 @@ MODELS
 =========================================================================================*/
 
 const Order = require("../model/Order.js");
+const Make = require("../model/Make.js");
 const Customer = require("../model/Customer.js");
 
 /*=========================================================================================
@@ -61,92 +62,55 @@ const adminContent = (req, res, next) => {
 ROUTES
 =========================================================================================*/
 
-// @route     GET /admin/orders/fetch-orders
+// @route     GET /orders/fetch
 // @desc      
 // @access    CONTENT - VERIFIED - ADMIN
-router.get("/admin/orders/fetch-orders", adminContent, async (req, res) => {
+router.get("/orders/fetch", adminContent, async (req, res) => {
   // FETCH ORDERS
-  let orders = [];
+  let orders;
   try {
-    orders = await Order.find();
-  } catch (error) {
-    return res.send({ status: "failed", content: error });
+    orders = await Order.fetch({}, true);
+  } catch (data) {
+    return res.send(data);
   }
-  // FETCH COMMENTS
-  let comments = [];
-  // TO DO .....
-  // FETCH COMMENTS
-  // TO DO .....
   // SUCCESS HANDLER
-  return res.send({ status: "success", content: { orders, comments } });
+  return res.send({ status: "succeeded", content: orders });
 });
 
-// @route     POST /admin/orders/update-order-status
+// @route     POST /orders/validated/save-make
 // @desc      
 // @access    CONTENT - VERIFIED - ADMIN
-router.post("/admin/orders/update-order-status", adminContent, async (req, res) => {
-  // DECLARE VARIABLES
-  const orderId = req.body.orderId;
-  const status = req.body.status;
-  // FETCH ORDER
-  let order;
+router.post("/orders/validated/save-make", adminContent, async (req, res) => {
+  // DECLARE AND INITIALISE VARIABLES
+  const makeId = req.body.makeId;
+  const builtQuantity = req.body.quantity;
+  // CREATE THE UPDATE OBJECT
+  const update = { property: ["quantity", "built"], value: builtQuantity };
+  // FETCH MAKE
+  let make;
   try {
-    order = await Order.findOne({ _id: orderId });
+    make = await Make.findOne({ _id: makeId });
   } catch (error) {
-    return res.send({ status: "failed", content: error });
+    return res.send({ status: "error", content: error });
   }
-  // VALIDATE ORDER
-  if (!order) return res.send({ status: "failed", content: "no order found" });
-  // UPDATE STATUS
-  order.updateStatus(status);
+  // UPDATE MAKE
+  make.update([update]);
   // SAVE UPDATE
-  let savedOrder;
   try {
-    savedOrder = await order.save();
+    await make.save();
   } catch (error) {
-    return res.send({ status: "failed", content: error });
+    return res.send({ status: "error", content: error });
   }
   // SUCCESS HANDLER
-  return res.send({ status: "success", content: savedOrder });
+  return res.send({ status: "succeeded", content: "successfully updated make" });
 });
 
-// @route     POST /admin/orders/post-comment
+// @route     GET /orders/process-validated
 // @desc      
 // @access    CONTENT - VERIFIED - ADMIN
-router.post("/admin/orders/post-comment", adminContent, async (req, res) => {
-  // DECLARE VARIABLES
-  const account = req.user;
-  const orderId = req.body.orderId;
-  const message = req.body.message;
-  // FETCH ORDER
-  let order;
-  try {
-    order = await Order.findOne({ _id: orderId });
-  } catch (error) {
-    return res.send({ status: "failed", content: error });
-  }
-  // CREATE NEW COMMENT
-  let comment = { accountId: account._id, message };
-  try {
-    comment = await Comment.build(comment, false);
-  } catch (error) {
-    return res.send({ status: "failed", content: error });
-  }
-  // UPDATE ORDER COMMENTS
-  order.comments.push(comment._id);
-  // SAVE ORDER UPDATE AND GET USER DETAILS
-  const promises = [Customer.findOne({ accountId: account._id }), order.save(), comment.save()];
-  let customer;
-  try {
-    [customer] = await Promise.all(promises);
-  } catch (error) {
-    return res.send({ status: "failed", content: error });
-  }
-  comment = comment.toObject();
-  // ADD INFORMATION TO COMMENT OBJECT
-  comment.author = { name: customer.displayName, picture: customer.picture };
-  // SUCCESS HANDLER
-  return res.send({ status: "success", content: { comment } });
+router.get("/orders/process-validated", adminContent, async (req, res) => {
+  // DECLARE AND INITIALISE VARIABLES
+  // 
 });
 
 /*=========================================================================================

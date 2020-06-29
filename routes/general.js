@@ -88,6 +88,11 @@ router.get("/discount", adminAccess, (req, res) => {
 // @access    ADMIN
 router.get("/wallet", adminAccess, (req, res) => res.sendFile("wallet.html", routeOptions));
 
+// @route     GET /orders
+// @desc    
+// @access    ADMIN
+router.get("/orders", adminAccess, (req, res) => res.sendFile("orders.html", routeOptions));
+
 /*=========================================================================================
 EXPORT ROUTE
 =========================================================================================*/

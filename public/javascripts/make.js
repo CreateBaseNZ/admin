@@ -61,12 +61,7 @@ make.save = async (id) => {
   // Send the update request
   let data;
   try {
-    data = (
-      await axios.post("/admin/make/update/price", {
-        id,
-        price,
-      })
-    )["data"];
+    data = (await axios.post("/make/update-price", { id, price }))["data"];
   } catch (error) {
     console.log(error);
     return;

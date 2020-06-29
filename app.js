@@ -75,11 +75,13 @@ const adminFileRoute = require("./routes/file.js");
 const adminMakeRoute = require("./routes/make.js");
 const adminDiscountRoute = require("./routes/discount.js");
 const adminWalletRoute = require("./routes/wallet.js");
+const adminOrdersRoute = require("./routes/orders.js");
 app.use(adminGeneralRoute);
 app.use(adminFileRoute);
 app.use(adminMakeRoute);
 app.use(adminDiscountRoute);
 app.use(adminWalletRoute);
+app.use(adminOrdersRoute);
 
 /*=========================================================================================
 END

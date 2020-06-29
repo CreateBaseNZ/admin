@@ -104,7 +104,7 @@ MakeSchema.statics.fetch = function (query = {}) {
       let formattedMake = {
         id: make._id, file: make.file, build: make.build, quick: make.quick,
         process: make.process, material: make.material, quality: make.quality,
-        strength: make.strength, colour: make.colour, quantity: make.quantity.ordered,
+        strength: make.strength, colour: make.colour, quantity: make.quantity,
         comment: make.comment, date: make.date, price: make.price
       }
       return formattedMake;
