@@ -450,7 +450,7 @@ OrderSchema.methods.amountMakes = function () {
     // Calculate total amount
     for (let i = 0; i < makes.length; i++) {
       const make = makes[i];
-      amount.total += (make.quantity * make.price);
+      amount.total += (make.quantity.ordered * make.price);
     }
     // RETURN SUCCESS RESPONSE
     return resolve(amount);
