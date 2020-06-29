@@ -72,10 +72,9 @@ router.post("/admin/make/update/price", adminAccess, async (req, res) => {
   // Fetch the make
   let make;
   try {
-    make = await Make.fetch({ _id: makeId });
-  } catch (error) {
-    res.send({ status: "failed", content: error });
-    return;
+    make = await Make.findOne({ _id: makeId });
+  } catch (data) {
+    return res.send(data);
   }
   // Update make
   make.price = price;
@@ -84,11 +83,9 @@ router.post("/admin/make/update/price", adminAccess, async (req, res) => {
   try {
     await make.save();
   } catch (error) {
-    res.send({ status: "failed", content: error });
-    return;
+    return res.send({ status: "error", content: error });
   }
-  res.send({ status: "success", content: "price updated" });
-  return;
+  return res.send({ status: "success", content: "price updated" });
 });
 
 router.get("/admin/comment/fetch/:commentId", adminAccess, async (req, res) => {
