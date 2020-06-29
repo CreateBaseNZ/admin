@@ -72,14 +72,14 @@ router.post("/admin/make/update/price", adminAccess, async (req, res) => {
   // Fetch the make
   let make;
   try {
-    make = await Make.findById(makeId);
+    make = await Make.fetch({ _id: makeId });
   } catch (error) {
     res.send({ status: "failed", content: error });
     return;
   }
   // Update make
   make.price = price;
-  make.updateStatus("checkout");
+  make.status = "checkout";
   // Save make
   try {
     await make.save();

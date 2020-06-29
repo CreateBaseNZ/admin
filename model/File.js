@@ -15,30 +15,14 @@ CREATE COMMENT MODEL
 =========================================================================================*/
 
 const FileSchema = new Schema({
-  _id: {
-    type: Schema.Types.ObjectId
-  },
-  length: {
-    type: Number
-  },
-  chunkSize: {
-    type: Number
-  },
-  uploadDate: {
-    type: Date
-  },
-  filename: {
-    type: String
-  },
-  md5: {
-    type: String
-  },
-  contentType: {
-    type: String
-  },
-  metadata: {
-    type: Schema.Types.Mixed
-  }
+  _id: { type: Schema.Types.ObjectId },
+  length: { type: Number },
+  chunkSize: { type: Number },
+  uploadDate: { type: Date },
+  filename: { type: String },
+  md5: { type: String },
+  contentType: { type: String },
+  metadata: { type: Schema.Types.Mixed }
 });
 
 /*=========================================================================================
