@@ -105,11 +105,76 @@ router.post("/orders/validated/save-make", adminContent, async (req, res) => {
   return res.send({ status: "succeeded", content: "successfully updated make" });
 });
 
-// @route     GET /orders/process-validated
+// @route     POST /orders/process-validated
 // @desc      
 // @access    CONTENT - VERIFIED - ADMIN
-router.get("/orders/process-validated", adminContent, async (req, res) => {
+router.post("/orders/process-validated", adminContent, async (req, res) => {
   // DECLARE AND INITIALISE VARIABLES
+  const orderId = req.body.orderId;
+  // FETCH THE ORDER
+  let order;
+  try {
+    order = await Order.findOne({ _id: orderId });
+  } catch (error) {
+    return res.send({ status: "error", content: error });
+  }
+  // PROCESS THE VALIDATED ORDER
+  try {
+    await order.processValidated();
+  } catch (data) {
+    return res.send(data);
+  }
+  // SAVE UPDATE
+  try {
+    await order.save();
+  } catch (error) {
+    return res.send({ status: "error", content: error });
+  }
+  // SUCCESS HANDLER
+  return res.send({ status: "succeeded", content: order });
+});
+
+// @route     POST /orders/save-tracking
+// @desc      
+// @access    CONTENT - VERIFIED - ADMIN
+router.post("/orders/save-tracking", adminContent, async (req, res) => {
+  // DECLARE AND INITIALISE VARIABLES
+  const orderId = req.body.orderId;
+  const tracking = req.body.tracking;
+  // FETCH ORDER
+  let order;
+  try {
+    order = await Order.findOne({ _id: orderId });
+  } catch (error) {
+    return res.send({ status: "error", content: error });
+  }
+  // UPDATE TRACKING
+  order.shipping.tracking = tracking;
+  // SAVE ORDER
+  try {
+    await order.save();
+  } catch (error) {
+    return res.send({ status: "error", content: error });
+  }
+  // SUCCESS HANDLER
+  return res.send({ status: "succeeded", content: order });
+});
+
+// @route     POST /orders/process-built
+// @desc      
+// @access    CONTENT - VERIFIED - ADMIN
+router.post("/orders/process-built", adminContent, async (req, res) => {
+  // DECLARE AND INITIALISE VARIABLES
+  const orderId = req.body.orderId;
+  // FETCH ORDER
+  let order;
+  try {
+    order = await Order.findOne({ _id: orderId });
+  } catch (error) {
+    return res.send({ status: "error", content: error });
+  }
+  // PROCESS THE BUILT ORDER
+  order.processBuilt();
   // 
 });
 

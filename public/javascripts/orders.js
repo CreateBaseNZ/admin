@@ -15,6 +15,8 @@ let orders = {
   // BUILT
   populateBuilt: undefined,
   addBuilt: undefined,
+  saveTracking: undefined,
+  processBuilt: undefined,
   // CHECKEDOUT
   populateCheckedout: undefined,
   addCheckedout: undefined
@@ -117,8 +119,9 @@ orders.addValidated = (order) => {
   const html = `
   <div id="orders-validated-${order._id}">
     <div>${makes}</div>
-    <button id="button-${order._id}" onclick="orders.processValidated('${order._id}');">Finish</button>
-  </div>`;
+    <button id="button-${order._id}" onclick="orders.processValidated('${order._id}');">Process</button>
+  </div>
+  `;
   // INSERT THE VALIDATED HTML
   document.querySelector("#orders-validated-container").insertAdjacentHTML("afterbegin", html);
   // SUCCESS HANDLER
@@ -132,7 +135,7 @@ orders.createValidatedMake = (make) => {
   // CREATE THE HTML
   const html = `
   <div class="orders-validated-make">
-    <p>Built: <input type="number" name="built" id="input-${make.id}" value="${make.quantity.built}"></p>
+    <p>Built: <input type="number" id="input-${make.id}" value="${make.quantity.built}"></p>
     <p>Ordered: ${make.quantity.ordered}</p>
     <button id="button-${make.id}" onclick="orders.saveValidatedMake('${make.id}');">Save</button>
   </div>
@@ -147,6 +150,7 @@ orders.createValidatedMake = (make) => {
 orders.saveValidatedMake = async (makeId) => {
   // DISABLE BUTTON
   document.querySelector(`#button-${makeId}`).setAttribute("disabled", "");
+  document.querySelector(`#button-${orderId}`).setAttribute("disabled", "");
   // COLLECT INPUT
   const quantity = document.querySelector(`#input-${makeId}`).value;
   // SEND REQUEST
@@ -167,11 +171,14 @@ orders.saveValidatedMake = async (makeId) => {
     // FETCH FAILED HANDLER
     // TO DO .....
     console.log(data.content); // TEMPORARY
+    document.querySelector(`#button-${makeId}`).removeAttribute("disabled");
+    document.querySelector(`#button-${orderId}`).removeAttribute("disabled");
     return reject();
   }
   // SUCCESS HANDLER
   // enable button
   document.querySelector(`#button-${makeId}`).removeAttribute("disabled");
+  document.querySelector(`#button-${orderId}`).removeAttribute("disabled");
   return;
 }
 
@@ -184,7 +191,7 @@ orders.processValidated = async (orderId) => {
   // SEND REQUEST
   let data;
   try {
-    data = (await axios.get("/orders/process-validated"))["data"];
+    data = (await axios.post("/orders/process-validated", { orderId }))["data"];
   } catch (error) {
     data = { status: "error", content: error };
   }
@@ -193,18 +200,19 @@ orders.processValidated = async (orderId) => {
     // ERROR HANDLER
     // TO DO .....
     console.log(data.content); // TEMPORARY
-    return reject();
+    return;
   } else if (data.status === "failed") {
     // TO DO .....
     // FETCH FAILED HANDLER
     // TO DO .....
     console.log(data.content); // TEMPORARY
-    return reject();
+    document.querySelector(`#button-${orderId}`).removeAttribute("disabled");
+    return;
   }
   // DELETE ELEMENT
   document.querySelector(`#orders-validated-${orderId}`).remove();
   // ADD ORDER TO BUILT
-  orders.addBuilt(order);
+  orders.addBuilt(data.content);
   return;
 }
 
@@ -226,6 +234,97 @@ orders.populateBuilt = (built = []) => {
     const order = built[i];
     orders.addBuilt(order);
   }
+}
+
+// @FUNC  orders.addBuilt
+// @TYPE
+// @DESC  
+orders.addBuilt = (order = {}) => {
+  // CREATE THE BUILT HTML
+  const html = `
+  <div id="orders-built-${order._id}">
+    <input type="text" name="tracking" id="input-${order._id}" value="${order.shipping.tracking}">
+    <button id="button-save-${order._id}" onclick="orders.saveTracking('${order._id}');">Save</button>
+    <button id="button-process-${order._id}" onclick="orders.processBuilt('${order._id}');">Process</button>
+  </div>
+  `;
+  // INSERT THE BUILT HTML
+  document.querySelector("#orders-built-container").insertAdjacentHTML("afterbegin", html);
+  // SUCCESS HANDLER
+  return;
+}
+
+// @FUNC  orders.saveTracking
+// @TYPE
+// @DESC  
+orders.saveTracking = async (orderId) => {
+  // DISABLE BUTTONS
+  document.querySelector(`#button-save-${orderId}`).setAttribute("disabled", "");
+  document.querySelector(`#button-process-${orderId}`).setAttribute("disabled", "");
+  // COLLECT INPUT
+  const tracking = document.querySelector(`#input-${orderId}`).value;
+  // SEND REQUEST
+  let data;
+  try {
+    data = (await axios.post("/orders/save-tracking", { orderId, tracking }))["data"];
+  } catch (error) {
+    data = { status: "error", content: error };
+  }
+  if (data.status === "error") {
+    // TO DO .....
+    // ERROR HANDLER
+    // TO DO .....
+    console.log(data.content); // TEMPORARY
+    return;
+  } else if (data.status === "failed") {
+    // TO DO .....
+    // FETCH FAILED HANDLER
+    // TO DO .....
+    console.log(data.content); // TEMPORARY
+    document.querySelector(`#button-save-${orderId}`).removeAttribute("disabled");
+    document.querySelector(`#button-process-${orderId}`).removeAttribute("disabled");
+    return;
+  }
+  // ENABLE BUTTONS
+  document.querySelector(`#button-save-${orderId}`).removeAttribute("disabled");
+  document.querySelector(`#button-process-${orderId}`).removeAttribute("disabled");
+  // SUCCESS HANDLER
+  return;
+}
+
+// @FUNC  orders.processBuilt
+// @TYPE
+// @DESC  
+orders.processBuilt = async (orderId) => {
+  // DISABLE BUTTONS
+  document.querySelector(`#button-process-${orderId}`).setAttribute("disabled", "");
+  // SEND REQUEST
+  let data;
+  try {
+    data = (await axios.post("/orders/process-built", { orderId }))["data"];
+  } catch (error) {
+    data = { status: "error", data: error };
+  }
+  if (data.status === "error") {
+    // TO DO .....
+    // ERROR HANDLER
+    // TO DO .....
+    console.log(data.content); // TEMPORARY
+    return;
+  } else if (data.status === "failed") {
+    // TO DO .....
+    // FETCH FAILED HANDLER
+    // TO DO .....
+    console.log(data.content); // TEMPORARY
+    document.querySelector(`#button-save-${orderId}`).removeAttribute("disabled");
+    document.querySelector(`#button-process-${orderId}`).removeAttribute("disabled");
+    return;
+  }
+  // ENABLE BUTTONS
+  document.querySelector(`#button-save-${orderId}`).removeAttribute("disabled");
+  document.querySelector(`#button-process-${orderId}`).removeAttribute("disabled");
+  // SUCCESS HANDLER
+  return;
 }
 
 /* ----------------------------------------------------------------------------------------
