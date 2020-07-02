@@ -17,6 +17,10 @@ let orders = {
   addBuilt: undefined,
   saveTracking: undefined,
   processBuilt: undefined,
+  // SHIPPED: PICKUP
+  populateShippedPickup: undefined,
+  addShippedPickup: undefined,
+  processShippedPickup: undefined,
   // CHECKEDOUT
   populateCheckedout: undefined,
   addCheckedout: undefined
@@ -42,6 +46,7 @@ orders.initialise = async () => {
   // POPULATE ELEMENTS
   orders.populateValidated(categorisedOrders.validated);
   orders.populateBuilt(categorisedOrders.built);
+  orders.populateShippedPickup(categorisedOrders.shippedPickup);
   orders.populateCheckedout(categorisedOrders.checkedout);
 }
 
@@ -80,8 +85,11 @@ orders.categorise = (fetchedOrders = []) => {
   const checkedout = fetchedOrders.filter(order => order.status === "checkedout");
   const validated = fetchedOrders.filter(order => order.status === "validated");
   const built = fetchedOrders.filter(order => order.status === "built");
+  const shippedPickup = fetchedOrders.filter(order => {
+    return (order.status === "shipped" && order.shipping.method === "pickup");
+  })
   // SUCCESS HANDLER: RETURN CATEGORISED ORDER OBJECT
-  return { checkedout, validated, built };
+  return { checkedout, validated, built, shippedPickup };
 }
 
 /* ----------------------------------------------------------------------------------------
@@ -112,7 +120,7 @@ orders.addValidated = (order) => {
   let makes = "";
   for (let i = 0; i < order.makes.checkout.length; i++) {
     const make = order.makes.checkout[i];
-    const html = orders.createValidatedMake(make);
+    const html = orders.createValidatedMake(make, order._id);
     makes += html;
   }
   // CREATE THE VALIDATED HTML
@@ -131,13 +139,13 @@ orders.addValidated = (order) => {
 // @FUNC  orders.createValidatedMake
 // @TYPE
 // @DESC  
-orders.createValidatedMake = (make) => {
+orders.createValidatedMake = (make, orderId) => {
   // CREATE THE HTML
   const html = `
   <div class="orders-validated-make">
     <p>Built: <input type="number" id="input-${make.id}" value="${make.quantity.built}"></p>
     <p>Ordered: ${make.quantity.ordered}</p>
-    <button id="button-${make.id}" onclick="orders.saveValidatedMake('${make.id}');">Save</button>
+    <button id="button-${make.id}" onclick="orders.saveValidatedMake('${make.id}', '${orderId}');">Save</button>
   </div>
   `;
   // SUCCESS HANDLER
@@ -147,7 +155,7 @@ orders.createValidatedMake = (make) => {
 // @FUNC  orders.saveValidatedMake
 // @TYPE
 // @DESC  
-orders.saveValidatedMake = async (makeId) => {
+orders.saveValidatedMake = async (makeId, orderId) => {
   // DISABLE BUTTON
   document.querySelector(`#button-${makeId}`).setAttribute("disabled", "");
   document.querySelector(`#button-${orderId}`).setAttribute("disabled", "");
@@ -241,10 +249,16 @@ orders.populateBuilt = (built = []) => {
 // @DESC  
 orders.addBuilt = (order = {}) => {
   // CREATE THE BUILT HTML
-  const html = `
-  <div id="orders-built-${order._id}">
+  let tracking = "";
+  if (order.shipping.method !== "pickup") {
+    tracking = `
     <input type="text" name="tracking" id="input-${order._id}" value="${order.shipping.tracking}">
     <button id="button-save-${order._id}" onclick="orders.saveTracking('${order._id}');">Save</button>
+    `;
+  }
+  const html = `
+  <div id="orders-built-${order._id}">
+    ${tracking}
     <button id="button-process-${order._id}" onclick="orders.processBuilt('${order._id}');">Process</button>
   </div>
   `;
@@ -320,11 +334,54 @@ orders.processBuilt = async (orderId) => {
     document.querySelector(`#button-process-${orderId}`).removeAttribute("disabled");
     return;
   }
-  // ENABLE BUTTONS
-  document.querySelector(`#button-save-${orderId}`).removeAttribute("disabled");
-  document.querySelector(`#button-process-${orderId}`).removeAttribute("disabled");
+  // DELETE ELEMENT
+  document.querySelector(`#orders-built-${orderId}`).remove();
   // SUCCESS HANDLER
   return;
+}
+
+/* ----------------------------------------------------------------------------------------
+SHIPPED: PICKUP
+---------------------------------------------------------------------------------------- */
+
+// @FUNC  orders.populateShippedPickup
+// @TYPE
+// @DESC  
+orders.populateShippedPickup = (shippedPickup = []) => {
+  if (!shippedPickup.length) {
+    // TO DO .....
+    // NO ORDER HANDLER
+    // TO DO .....
+    return;
+  }
+  for (let i = 0; i < shippedPickup.length; i++) {
+    const order = shippedPickup[i];
+    orders.addBuilt(order);
+  }
+}
+
+// @FUNC  orders.addShippedPickup
+// @TYPE
+// @DESC  
+orders.addShippedPickup = (order = {}) => {
+  // CREATE THE SHIPPED PICKUP HTML
+  const html = `
+  <div id="orders-shipped-pickup-${order._id}">
+    ${tracking}
+    <button id="button-${order._id}" onclick="orders.processShippedPickup('${order._id}');">Picked Up</button>
+  </div>
+  `;
+  // INSERT THE SHIPPED PICKUP HTML
+  document.querySelector("#orders-shipped-pickup-container").insertAdjacentHTML("afterbegin", html);
+  // SUCCESS HANDLER
+  return;
+}
+
+// @FUNC  orders.processShippedPickup
+// @TYPE
+// @DESC  
+orders.processShippedPickup = async (orderId) => {
+
 }
 
 /* ----------------------------------------------------------------------------------------

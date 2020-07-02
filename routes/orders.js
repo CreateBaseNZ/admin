@@ -174,8 +174,19 @@ router.post("/orders/process-built", adminContent, async (req, res) => {
     return res.send({ status: "error", content: error });
   }
   // PROCESS THE BUILT ORDER
-  order.processBuilt();
-  // 
+  try {
+    await order.processBuilt();
+  } catch (data) {
+    return res.send(data);
+  }
+  // SAVE UPDATE
+  try {
+    await order.save();
+  } catch (error) {
+    return res.send({ status: "error", content: error });
+  }
+  // SUCCESS HANDLER
+  return res.send({ status: "succeeded", content: order });
 });
 
 /*=========================================================================================
