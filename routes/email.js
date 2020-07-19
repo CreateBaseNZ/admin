@@ -52,7 +52,7 @@ router.post("/email/send/template-one", adminAccess, async (req, res) => {
   } catch (error) {
     return res.send({ status: "failed", content: error });
   }
-  res.send({ status: "success", content: "email sent" });
+  res.send({ status: "succeeded", content: "email sent" });
 });
 
 // @route     POST /email/newsletter
@@ -83,7 +83,7 @@ router.post("/email/newsletter", adminAccess, async (req, res) => {
     }
   }
   // Send the success message
-  res.send({ status: "success", content: "newsletter sent" });
+  res.send({ status: "succeeded", content: "newsletter sent" });
 });
 
 /*=========================================================================================
@@ -123,7 +123,7 @@ const sendEmail = (recipient, template, options) => {
     } catch (error) {
       reject({ status: "failed", content: "failed to send the email" });
     }
-    resolve({ status: "success", content: "email sent" });
+    resolve({ status: "succeeded", content: "email sent" });
   });
 };
 

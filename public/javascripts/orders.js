@@ -317,7 +317,7 @@ orders.processBuilt = async (orderId) => {
   try {
     data = (await axios.post("/orders/process-built", { orderId }))["data"];
   } catch (error) {
-    data = { status: "error", data: error };
+    data = { status: "error", content: error };
   }
   if (data.status === "error") {
     // TO DO .....

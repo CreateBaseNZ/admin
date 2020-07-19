@@ -46,7 +46,7 @@ router.get("/admin/discount/fetch", adminAccess, async (req, res) => {
     return res.send({ status: "failed", content: error });
   }
   // SUCCESS HANDLER
-  return res.send({ status: "success", content: discounts });
+  return res.send({ status: "succeeded", content: discounts });
 });
 
 router.post("/admin/discount/create", adminAccess, async (req, res) => {
@@ -64,7 +64,7 @@ router.post("/admin/discount/create", adminAccess, async (req, res) => {
     return res.send({ status: "failed", content: error });
   }
   // SUCCESS HANDLER
-  return res.send({ status: "success", content: discount });
+  return res.send({ status: "succeeded", content: discount });
 });
 
 /*=========================================================================================

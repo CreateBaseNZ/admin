@@ -61,7 +61,7 @@ router.get("/admin/make/fetch", adminAccess, async (req, res) => {
     res.send({ status: "failed", content: error });
     return;
   }
-  res.send({ status: "success", content: makes });
+  res.send({ status: "succeeded", content: makes });
   return;
 });
 
@@ -85,7 +85,7 @@ router.post("/make/update-price", adminAccess, async (req, res) => {
   } catch (error) {
     return res.send({ status: "error", content: error });
   }
-  return res.send({ status: "success", content: "price updated" });
+  return res.send({ status: "succeeded", content: "price updated" });
 });
 
 router.get("/admin/comment/fetch/:commentId", adminAccess, async (req, res) => {
@@ -97,7 +97,7 @@ router.get("/admin/comment/fetch/:commentId", adminAccess, async (req, res) => {
     res.send({ status: "failed", content: error });
     return;
   }
-  res.send({ status: "success", content: comment });
+  res.send({ status: "succeeded", content: comment });
   return;
 });
 
