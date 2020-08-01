@@ -145,32 +145,23 @@ OrderSchema.statics.merge = function (accountId, sessionId) {
     try {
       sessionOrder = await this.findOne({ sessionId, status });
     } catch (error) {
-      return reject(error);
+      return reject({ status: "error", content: error });
     }
     // FETCH THE ORDER WITH THE CORRESPONDING ACCOUNT ID
     let accountOrder;
     try {
       accountOrder = await this.findOne({ accountId, status });
     } catch (error) {
-      return reject(error);
+      return reject({ status: "error", content: error });
     }
     // MERGE ORDER PROCESS
-    // TO DO.....
-    // Merge properties of each order more intelligently
-    // TO DO.....
-    let order;
-    if (accountOrder) {
-      order = accountOrder;
-    } else if (sessionOrder) {
-      order = sessionOrder;
-      order.accountId = accountId;
-    }
-    // SAVE ORDER
-    if (order) {
+    if (sessionOrder && !accountOrder) {
+      sessionOrder.accountId = accountId;
+      // SAVE ORDER
       try {
-        await order.save();
+        await sessionOrder.save();
       } catch (error) {
-        return reject(error);
+        return reject({ status: "error", content: error });
       }
     }
     // RETURN PROMISE RESOLVE
@@ -198,7 +189,7 @@ OrderSchema.statics.fetch = function (query = {}, withMakes = false, withComment
     // FETCH MAKES
     if (withMakes) {
       let promises = [];
-      for (let i = 0; i < formattedOrders.length; i++) promises.push(Make.fetch({ _id: formattedOrders[i].makes.checkout }));
+      for (let i = 0; i < formattedOrders.length; i++) promises.push(Make.fetch({ _id: formattedOrders[i].makes.checkout }, withComments));
       // fetch comments of each order asynchronously
       let makesArray;
       try {
@@ -418,7 +409,7 @@ OrderSchema.methods.processValidated = function () {
 OrderSchema.methods.processBuilt = function () {
   return new Promise(async (resolve, reject) => {
     // CHECK IF ORDER HAS TRACKING IF IT'S NOT PICKUP
-    if (this.shipping.method !== "pickup" && !this.shipped.tracking) {
+    if (this.shipping.method !== "pickup" && !this.shipping.tracking) {
       return reject({ status: "failed", content: "tracking number required" });
     }
     // UPDATE ORDER
