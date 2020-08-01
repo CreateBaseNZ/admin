@@ -356,7 +356,7 @@ orders.populateShippedPickup = (shippedPickup = []) => {
   }
   for (let i = 0; i < shippedPickup.length; i++) {
     const order = shippedPickup[i];
-    orders.addBuilt(order);
+    orders.addShippedPickup(order);
   }
 }
 
