@@ -4,30 +4,49 @@ REQUIRED MODULES
 
 const express = require("express");
 const path = require("path");
-const passport = require("passport");
 
 /*=========================================================================================
 VARIABLES
 =========================================================================================*/
 
 const router = new express.Router();
-const routeOptions = {
-  root: path.join(__dirname, "../views"),
-};
-
-/*=========================================================================================
-MODELS
-=========================================================================================*/
+const routeOptions = { root: path.join(__dirname, "../views") };
 
 /*=========================================================================================
 MIDDLEWARE
 =========================================================================================*/
 
-const adminAccess = (req, res, next) => {
-  if (req.isAuthenticated() && req.user.type === "admin") {
-    return next();
+const strictlyPublicAccess = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    if (req.user.type !== "admin") {
+      req.logout();
+      return res.redirect("/");
+    } else {
+      if (req.user.verification.status) {
+        return res.redirect("/dashboard");
+      } else {
+        return res.redirect("https://app.createbase.co.nz/verification");
+      }
+    }
   } else {
-    res.redirect("/");
+    return next();
+  }
+}
+
+const verifiedAccess = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    if (req.user.type !== "admin") {
+      req.logout();
+      return res.redirect("/");
+    } else {
+      if (req.user.verification.status) {
+        return next();
+      } else {
+        return res.redirect("https://app.createbase.co.nz/verification");
+      }
+    }
+  } else {
+    return res.redirect("/");
   }
 };
 
@@ -35,63 +54,15 @@ const adminAccess = (req, res, next) => {
 ROUTES
 =========================================================================================*/
 
-/* ----------------------------------------------------------------------------------------
-ACCOUNT
----------------------------------------------------------------------------------------- */
-
-// @route     POST /login
-// @desc
-// @access    ADMIN
-router.post("/login", passport.authenticate("local-admin-login", {
-  successRedirect: "/", failureRedirect: "/login"
-}))
-
-/* ----------------------------------------------------------------------------------------
-NAVIGATION
----------------------------------------------------------------------------------------- */
-
 // @route     GET /
 // @desc
-// @access    Admin
-router.get("/", (req, res) => {
-  res.sendFile("home.html", routeOptions);
-});
+// @access    PUBLIC
+router.get("/", strictlyPublicAccess, (req, res) => res.sendFile("home.html", routeOptions));
 
-// @route     GET /login
+// @route     GET /dashboard
 // @desc
-// @access    Admin
-router.get("/login", (req, res) => res.sendFile("login.html", routeOptions));
-
-// @route     Get /file
-// @desc
-// @access    Admin
-router.get("/file", adminAccess, (req, res) => {
-  res.sendFile("file.html", routeOptions);
-});
-
-// @route     Get /make
-// @desc
-// @access    Admin
-router.get("/make", adminAccess, (req, res) => {
-  res.sendFile("make.html", routeOptions);
-});
-
-// @route     Get /discount
-// @desc
-// @access    Admin
-router.get("/discount", adminAccess, (req, res) => {
-  res.sendFile("discount.html", routeOptions);
-});
-
-// @route     GET /wallet
-// @desc    
-// @access    ADMIN
-router.get("/wallet", adminAccess, (req, res) => res.sendFile("wallet.html", routeOptions));
-
-// @route     GET /orders
-// @desc    
-// @access    ADMIN
-router.get("/orders", adminAccess, (req, res) => res.sendFile("orders.html", routeOptions));
+// @access    VERIFIED ADMIN
+router.get("/dashboard", verifiedAccess, (req, res) => res.sendFile("dashboard.html", routeOptions));
 
 /*=========================================================================================
 EXPORT ROUTE

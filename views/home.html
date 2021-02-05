@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home • Admin • CreateBase</title>
+  <title>Login • Admin</title>
 </head>
-
-<body>
-
+<body onload="home.init.init();">
+  <h1>Login</h1>
+  <form id="login-form" action="/login/submit" method="POST">
+    <input type="text" name="email" id="login-email" placeholder="Email Address">
+    <input type="password" name="password" id="login-password" placeholder="Password" autocomplete="new-password">
+  </form>
+  <button id="login-button">Log in</button>
+  <!-- ==========================JS========================== -->
+  <!-- -----------------------SOURCED------------------------ -->
+  <script async src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <!-- ------------------------CUSTOM------------------------ -->
+  <script async src="/public/javascripts/global.js"></script>
+  <script async src="/public/javascripts/home.js"></script>
 </body>
-
 </html>

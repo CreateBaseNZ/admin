@@ -1,48 +1,38 @@
-/*=========================================================================================
-REQUIRED MODULES
-=========================================================================================*/
+/* ==========================================================
+MODULES
+========================================================== */
 
-if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config();
-}
 const express = require("express");
-const path = require("path");
-const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
-const cookieSession = require("cookie-session");
-const expressSession = require("express-session");
+const helmet = require("helmet");
+const mongoose = require("mongoose");
 const passport = require("passport");
+const session = require("express-session");
 
-/*=========================================================================================
+/* ==========================================================
 VARIABLES
-=========================================================================================*/
+========================================================== */
 
+if (process.env.NODE_ENV !== "production") require("dotenv").config();
 const app = express();
-const maintenance = require("./config/maintenance.js");
 
-/*=========================================================================================
-SETUP DATABASE
-=========================================================================================*/
+/* ==========================================================
+DATABASE
+========================================================== */
 
 mongoose.connect(process.env.MONGODB_URL, {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useUnifiedTopology: true,
+  useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true,
 });
 
-/*=========================================================================================
-SETUP SERVER
-=========================================================================================*/
+/* ==========================================================
+SERVER
+========================================================== */
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server is running at port ${process.env.PORT}`);
-  maintenance();
-});
+app.listen(process.env.PORT, () => console.log(`Server is running at port ${process.env.PORT}`));
 
-/*=========================================================================================
-GENERAL MIDDLEWARE
-=========================================================================================*/
+/* ==========================================================
+MIDDLEWARES
+========================================================== */
 
 // Express Middleware: Serve Static Files (HTML, CSS, JS, Images)
 app.use(express.static(__dirname));
@@ -50,39 +40,34 @@ app.use(express.static(__dirname));
 app.use(bodyParser.urlencoded({ extended: false }));
 // Parse application/json
 app.use(bodyParser.json());
-// Parse Cookie header and populate req.cookies
-app.use(cookieParser());
+// Security
+app.use(helmet({ contentSecurityPolicy: false }));
 
-/*=========================================================================================
-SETUP AUTHENTICATION (PASSPORT JS)
-=========================================================================================*/
+/* ==========================================================
+AUTHENTICATION
+========================================================== */
 
-app.use(expressSession({
-  secret: process.env.COOKIES_SECRET_KEY, saveUninitialized: true,
+// Session
+app.use(session({
+  secret: process.env.SESSION_SECRET, saveUninitialized: true,
   resave: true, rolling: true, sameSite: "none"
 }));
 
+// Passport
 app.use(passport.initialize());
 app.use(passport.session());
-require("./config/passport.js");
+require("./configs/passport.js");
 
-/*=========================================================================================
-ROUTES
-=========================================================================================*/
+/* ==========================================================
+ROUTERS
+========================================================== */
 
-const adminGeneralRoute = require("./routes/general.js");
-const adminFileRoute = require("./routes/file.js");
-const adminMakeRoute = require("./routes/make.js");
-const adminDiscountRoute = require("./routes/discount.js");
-const adminWalletRoute = require("./routes/wallet.js");
-const adminOrdersRoute = require("./routes/orders.js");
-app.use(adminGeneralRoute);
-app.use(adminFileRoute);
-app.use(adminMakeRoute);
-app.use(adminDiscountRoute);
-app.use(adminWalletRoute);
-app.use(adminOrdersRoute);
+const generalRouter = require("./routes/general.js");
+app.use(generalRouter);
 
-/*=========================================================================================
+const accountRouter = require("./routes/account.js");
+app.use(accountRouter);
+
+/* ==========================================================
 END
-=========================================================================================*/
+========================================================== */

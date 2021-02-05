@@ -1,25 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wallet • Admin • CreateBase</title>
+  <title>Dashboard • Admin</title>
 </head>
-
 <body>
-  <form id="bank-transfer">
-    <input type="number" name="code" id="bank-transfer-code">
-    <input type="number" name="amount" id="bank-transfer-amount">
-  </form>
-  <button id="bank-transfer-button" onclick="wallet.bankTransfer();">Bank Transfer</button>
-
+  <h1>Dashboard</h1>
   <!-- ==========================JS========================== -->
   <!-- -----------------------SOURCED------------------------ -->
-  <script async src="https://js.stripe.com/v3/"></script>
   <script async src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <!-- ------------------------CUSTOM------------------------ -->
-  <script async src="/public/javascripts/wallet.js"></script>
+  <script async src="/public/javascripts/global.js"></script>
+  <script async src="/public/javascripts/dashboard.js"></script>
 </body>
-
 </html>
