@@ -2,35 +2,34 @@
 MODULES
 ========================================================== */
 
-if (process.env.NODE_ENV !== "production") require("dotenv").config();
-const multer = require("multer");
-const GridFsStorage = require("multer-gridfs-storage");
+const mongoose = require("mongoose");
+const gridFsStream = require("gridfs-stream");
 
 /* ==========================================================
-SETUP UPLOAD
+VARIABLES
 ========================================================== */
 
-const storage = new GridFsStorage({
-  url: process.env.MONGODB_URL,
-  options: { useNewUrlParser: true, useUnifiedTopology: true },
-  file: (req, file) => {
-    // Remove file name extension
-    // TO DO
-    // Return object containing updated properties
-    return {
-      filename: file.originalname,
-      contentType: file.mimetype
-    }
-  }
-});
+if (process.env.NODE_ENV !== "production") require("dotenv").config();
+let GridFS;
 
-const upload = multer({ storage });
+/* ==========================================================
+SETUP GRIDFS
+========================================================== */
+
+mongoose.createConnection(process.env.MONGODB_URL,
+  { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true },
+  (error, client) => {
+    if (error) throw error;
+
+    GridFS = gridFsStream(client.db, mongoose.mongo);
+    GridFS.collection("fs");
+  });
 
 /* ==========================================================
 EXPORT
 ========================================================== */
 
-module.exports = upload;
+module.exports = GridFS;
 
 /* ==========================================================
 END

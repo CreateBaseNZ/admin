@@ -68,6 +68,9 @@ app.use(generalRouter);
 const accountRouter = require("./routes/account.js");
 app.use(accountRouter);
 
+const dashboardRouter = require("./routes/dashboard.js");
+app.use(dashboardRouter);
+
 /* ==========================================================
 END
 ========================================================== */

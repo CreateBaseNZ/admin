@@ -85,6 +85,14 @@ router.post("/login/validate", async (req, res) => {
   return res.send({ status: "succeeded", content: "" });
 });
 
+// @route   GET /logout
+// @desc
+// @access  VERIFIED PRIVATE
+router.get("/logout", (req, res) => {
+  req.logout();
+  return res.redirect("/");
+});
+
 /* ==========================================================
 EXPORT
 ========================================================== */
