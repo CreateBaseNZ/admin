@@ -3,14 +3,26 @@ REQUIRED MODULES
 =========================================================================================*/
 
 const express = require("express");
+const mongoose = require("mongoose");
+const gridFsStream = require("gridfs-stream");
 
 /*=========================================================================================
 VARIABLES
 =========================================================================================*/
 
 const router = new express.Router();
-const GridFS = require("../configs/gridfs.js");
 const upload = require("../configs/upload.js");
+
+let GridFS;
+
+mongoose.createConnection(process.env.MONGODB_URL,
+  { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true },
+  (error, client) => {
+    if (error) throw error;
+
+    GridFS = gridFsStream(client.db, mongoose.mongo);
+    GridFS.collection("fs");
+  });
 
 /*=========================================================================================
 MIDDLEWARE
