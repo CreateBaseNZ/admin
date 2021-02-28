@@ -89,6 +89,13 @@ router.post("/dashboard/upload/default-avatar", upload.single("avatar"), verifie
   return res.send({ status: "succeeded", content: "You successfully uploaded a default avatar" });
 });
 
+router.post("/dashboard/upload/image", upload.single("image"), verifiedContent, (req, res) => {
+  // Delete old image
+  // TO DO
+  // Success handler
+  return res.send({ status: "succeeded", content: "You successfully uploaded an image" });
+});
+
 /*=========================================================================================
 EXPORT ROUTE
 =========================================================================================*/

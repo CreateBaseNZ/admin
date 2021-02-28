@@ -4,6 +4,7 @@ VARIABLES
 
 let global = {
   compressImage: undefined,
+  compressImagePNG: undefined,
   readImage: undefined
 }
 
@@ -30,6 +31,33 @@ global.compressImage = async (identifier = "", name = "", compressSize = 300) =>
     });
     const newFile = new File([blob], file.name, {
       type: "image/jpeg", lastModified: Date.now()
+    });
+    // Update input
+    input.set(name, newFile);
+    // Return success handler
+    return resolve(input);
+  });
+}
+
+/**
+ * Compress the image file.
+ * @param {String} identifier 
+ * @param {String} name 
+ * @param {Number} compressSize 
+ */
+global.compressImagePNG = async (identifier = "", name = "", compressSize = 300) => {
+  return new Promise(async (resolve) => {
+    // Collect image
+    const element = document.querySelector(identifier);
+    let input = new FormData(element);
+    const file = input.get(name);
+    // Compress image
+    const canvas = await global.readImage(file, compressSize);
+    const blob = await new Promise((resolve) => {
+      canvas.toBlob(resolve, "image/png", 1);
+    });
+    const newFile = new File([blob], file.name, {
+      type: "image/png", lastModified: Date.now()
     });
     // Update input
     input.set(name, newFile);

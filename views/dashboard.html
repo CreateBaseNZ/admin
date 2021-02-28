@@ -12,7 +12,11 @@
     <input type="file" name="avatar" id="avatar-input">
   </form>
   <button onclick="dashboard.upload.avatar();">Upload Avatar</button>
-  <a href="/logout"></a>
+  <form id="image-form">
+    <input type="file" name="image" id="image-input">
+  </form>
+  <button onclick="dashboard.upload.image();">Upload Image</button>
+  <a href="/logout">Logout</a>
   <!-- ==========================JS========================== -->
   <!-- -----------------------SOURCED------------------------ -->
   <script async src="https://unpkg.com/axios/dist/axios.min.js"></script>
