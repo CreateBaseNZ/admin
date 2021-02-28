@@ -12,6 +12,7 @@ VARIABLES
 
 const router = new express.Router();
 const upload = require("../configs/upload.js");
+const email = require("../configs/email.js")
 
 let GridFS;
 
@@ -23,6 +24,12 @@ mongoose.createConnection(process.env.MONGODB_URL,
     GridFS = gridFsStream(client.db, mongoose.mongo);
     GridFS.collection("fs");
   });
+
+/*=========================================================================================
+MODELS
+=========================================================================================*/
+
+const Mail = require("../models/Mail.js");
 
 /*=========================================================================================
 MIDDLEWARE
@@ -94,6 +101,66 @@ router.post("/dashboard/upload/image", upload.single("image"), verifiedContent, 
   // TO DO
   // Success handler
   return res.send({ status: "succeeded", content: "You successfully uploaded an image" });
+});
+
+router.post("/dashboard/send-global-email/new-subscriber", verifiedContent, async (req, res) => {
+  // Fetch emails
+  let mailOne;
+  try {
+    mailOne = await Mail.findOne({ email: "carlvelasco96@gmail.com" });
+  } catch (error) {
+    return res.send({ status: "error", content: error });
+  }
+  let mailTwo;
+  try {
+    mailTwo = await Mail.findOne({ email: "kbradyoung@gmail.com" });
+  } catch (error) {
+    return res.send({ status: "error", content: error });
+  }
+  let mailThree;
+  try {
+    mailThree = await Mail.findOne({ email: "louiscflin@gmail.com" });
+  } catch (error) {
+    return res.send({ status: "error", content: error });
+  }
+  const mails = [mailOne, mailTwo, mailThree];
+  // Filter emails who already received a new subscriber email
+  let newMails = mails.filter(mail => {
+    const index = mail.received.indexOf("newSubscriber");
+    return (index === -1);
+  });
+  // Process each email
+  let promises = [];
+  for (let i = 0; i < newMails.length; i++) {
+    let mail = newMails[i];
+    const promise = new Promise(async (resolve, reject) => {
+      const html = Mail.buildNewSubscriberEmail(mail);
+      const subject = "Thank you for subscribing to CreateBase!";
+      const emailAddress = mail.email;
+      const text = "";
+      const emailObject = email.build({ subject, html, email: emailAddress, text });
+      try {
+        await email.send(emailObject);
+      } catch (error) {
+        return reject(data);
+      }
+      mail.received.push("newSubscriber");
+      try {
+        await mail.save();
+      } catch (error) {
+        return reject({ status: "error", content: error });
+      }
+      return resolve();
+    });
+    promises.push(promise);
+  }
+  try {
+    await Promise.all(promises);
+  } catch (data) {
+    return res.send(data);
+  }
+  // Success handler
+  return res.send({ status: "succeeded", content: "emails sent successfully!" });
 });
 
 /*=========================================================================================

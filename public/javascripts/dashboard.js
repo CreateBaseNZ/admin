@@ -10,6 +10,10 @@ let dashboard = {
   upload: {
     avatar: undefined,
     image: undefined
+  },
+
+  globalMail: {
+    newSubscribers: undefined
   }
 }
 
@@ -58,15 +62,8 @@ dashboard.upload.avatar = async () => {
 dashboard.upload.image = async () => {
   // Disable button
   // TO DO
-  // Collect inputs
   // Collect input
-  let input;
-  const file = document.querySelector("#image-input");
-  if (file.files.length !== 0) {
-    input = await global.compressImagePNG("#image-form", "image", 500);
-  } else {
-    input = new FormData();
-  }
+  let input = new FormData(document.querySelector("#image-form"));
   // Validate input
   const image = input.get("image");
   if (!image) return console.log("Please provide an image");
@@ -91,6 +88,16 @@ dashboard.upload.image = async () => {
   // Success handler
   console.log(data.content);
   return;
+}
+
+dashboard.globalMail.newSubscribers = async () => {
+  let data;
+  try {
+    data = (await axios.post("/dashboard/send-global-email/new-subscriber"))["data"];
+  } catch (error) {
+    data = { status: "error", content: error };
+  }
+  console.log(data);
 }
 
 /* ==========================================================
