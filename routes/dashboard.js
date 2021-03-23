@@ -105,19 +105,12 @@ router.post("/dashboard/upload/image", upload.single("image"), verifiedContent, 
 
 router.post("/dashboard/send-global-email/new-subscriber", verifiedContent, async (req, res) => {
   // Fetch emails
-  let mailOne;
+  let mails;
   try {
-    mailOne = await Mail.findOne({ email: "carlvelasco96@gmail.com" });
+    mails = await Mail.find();
   } catch (error) {
     return res.send({ status: "error", content: error });
   }
-  let mailTwo;
-  try {
-    mailTwo = await Mail.findOne({ email: "kbradyoung@gmail.com" });
-  } catch (error) {
-    return res.send({ status: "error", content: error });
-  }
-  const mails = [mailOne, mailTwo];
   // Filter emails who already received a new subscriber email
   let newMails = mails.filter(mail => {
     const index = mail.received.indexOf("newSubscriber");
