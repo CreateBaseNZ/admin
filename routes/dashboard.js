@@ -117,13 +117,7 @@ router.post("/dashboard/send-global-email/new-subscriber", verifiedContent, asyn
   } catch (error) {
     return res.send({ status: "error", content: error });
   }
-  let mailThree;
-  try {
-    mailThree = await Mail.findOne({ email: "louiscflin@gmail.com" });
-  } catch (error) {
-    return res.send({ status: "error", content: error });
-  }
-  const mails = [mailOne, mailTwo, mailThree];
+  const mails = [mailOne, mailTwo];
   // Filter emails who already received a new subscriber email
   let newMails = mails.filter(mail => {
     const index = mail.received.indexOf("newSubscriber");
