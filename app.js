@@ -1,38 +1,21 @@
-/* ==========================================================
-MODULES
-========================================================== */
+// MODULES ==================================================
 
 const express = require("express");
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
-const mongoose = require("mongoose");
-const passport = require("passport");
-const session = require("express-session");
 
-/* ==========================================================
-VARIABLES
-========================================================== */
+// VARIABLES ================================================
 
 if (process.env.NODE_ENV !== "production") require("dotenv").config();
 const app = express();
 
-/* ==========================================================
-DATABASE
-========================================================== */
+// SERVER ===================================================
 
-mongoose.connect(process.env.MONGODB_URL, {
-  useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true,
-});
+app.listen(process.env.PORT, () =>
+  console.log(`Server is running at port ${process.env.PORT}`)
+);
 
-/* ==========================================================
-SERVER
-========================================================== */
-
-app.listen(process.env.PORT, () => console.log(`Server is running at port ${process.env.PORT}`));
-
-/* ==========================================================
-MIDDLEWARES
-========================================================== */
+// MIDDLEWARE ===============================================
 
 // Express Middleware: Serve Static Files (HTML, CSS, JS, Images)
 app.use(express.static(__dirname));
@@ -43,34 +26,6 @@ app.use(bodyParser.json());
 // Security
 app.use(helmet({ contentSecurityPolicy: false }));
 
-/* ==========================================================
-AUTHENTICATION
-========================================================== */
+// ROUTERS ==================================================
 
-// Session
-app.use(session({
-  secret: process.env.SESSION_SECRET, saveUninitialized: true,
-  resave: true, rolling: true, sameSite: "none"
-}));
-
-// Passport
-app.use(passport.initialize());
-app.use(passport.session());
-require("./configs/passport.js");
-
-/* ==========================================================
-ROUTERS
-========================================================== */
-
-const generalRouter = require("./routes/general.js");
-app.use(generalRouter);
-
-const accountRouter = require("./routes/account.js");
-app.use(accountRouter);
-
-const dashboardRouter = require("./routes/dashboard.js");
-app.use(dashboardRouter);
-
-/* ==========================================================
-END
-========================================================== */
+// END ======================================================
