@@ -4,20 +4,26 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login • Admin</title>
+  <title>Console • Admin</title>
 </head>
-<body onload="home.init.init();">
-  <h1>Login</h1>
-  <form id="login-form" action="/login/submit" method="POST">
-    <input type="text" name="email" id="login-email" placeholder="Email Address">
-    <input type="password" name="password" id="login-password" placeholder="Password" autocomplete="new-password">
-  </form>
-  <button id="login-button">Log in</button>
+<body onload="home.initialise();">
+  <div>
+    <h1>Send Email to Newsletter Subscribers</h1>
+    <input type="text" name="newsletterEmailGroup" id="newsletter-email-group" placeholder="Group">
+    <input type="text" name="newsletterEmailSubject" id="newsletter-email-subject" placeholder="Subject">
+    <textarea name="newsletterEmailBody" id="newsletter-email-body" cols="60" rows="20" placeholder="Body"></textarea>
+    <button id="newsletter-email-submit">Send Newsletter</button>
+  </div>
+  <div>
+    <h1>Send Email to Educators</h1>
+    <input type="text" name="educatorEmailSubject" id="educator-email-subject" placeholder="Subject">
+    <textarea name="educatorEmailBody" id="educator-email-body" cols="60" rows="20" placeholder="Body"></textarea>
+    <button id="educator-email-submit">Send Email to Educators</button>
+  </div>
   <!-- ==========================JS========================== -->
   <!-- -----------------------SOURCED------------------------ -->
   <script async src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <!-- ------------------------CUSTOM------------------------ -->
-  <script async src="/public/javascripts/global.js"></script>
   <script async src="/public/javascripts/home.js"></script>
 </body>
 </html>

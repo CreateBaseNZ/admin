@@ -28,4 +28,7 @@ app.use(helmet({ contentSecurityPolicy: false }));
 
 // ROUTERS ==================================================
 
+const generalRouter = require("./routes/general.js");
+app.use(generalRouter);
+
 // END ======================================================
