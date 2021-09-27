@@ -4,6 +4,7 @@ let home = {
 	initialise: undefined,
 	sendNewsletter: undefined,
 	emailEducators: undefined,
+	fetchSchools: undefined,
 };
 
 // FUNCTIONS ================================================
@@ -14,6 +15,9 @@ home.initialise = async function () {
 	});
 	document.querySelector("#educator-email-submit").addEventListener("click", function () {
 		home.emailEducators();
+	});
+	document.querySelector("#fetch-schools").addEventListener("click", function () {
+		home.fetchSchools();
 	});
 };
 
@@ -56,17 +60,14 @@ home.emailEducators = async function () {
 	return;
 };
 
-home.createJoinOrg = async function () {
-	// Send the request to the backend
+home.fetchSchools = async function () {
 	let data;
 	try {
-		data = (await axios.post("/organisation/create-join-email"))["data"];
+		data = (await axios.get("https://catalogue.data.govt.nz/api/3/action/datastore_search?resource_id=20b7c271-fd5a-4c9e-869b-481a0e2453cd&limit=3000"))["data"];
 	} catch (error) {
 		data = { status: "error", content: error };
 	}
-	console.log(data);
-	// Success handler
-	return;
+	console.log(data.result.records);
 };
 
 // END ======================================================
