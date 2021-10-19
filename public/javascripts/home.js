@@ -5,19 +5,27 @@ let home = {
 	sendNewsletter: undefined,
 	emailEducators: undefined,
 	fetchSchools: undefined,
+	refactor: undefined,
+	updateColdEmails: undefined,
 };
 
 // FUNCTIONS ================================================
 
 home.initialise = async function () {
-	document.querySelector("#newsletter-email-submit").addEventListener("click", function () {
-		home.sendNewsletter();
-	});
-	document.querySelector("#educator-email-submit").addEventListener("click", function () {
-		home.emailEducators();
-	});
-	document.querySelector("#fetch-schools").addEventListener("click", function () {
-		home.fetchSchools();
+	// document.querySelector("#newsletter-email-submit").addEventListener("click", function () {
+	// 	home.sendNewsletter();
+	// });
+	// document.querySelector("#educator-email-submit").addEventListener("click", function () {
+	// 	home.emailEducators();
+	// });
+	// document.querySelector("#fetch-schools").addEventListener("click", function () {
+	// 	home.fetchSchools();
+	// });
+	// document.querySelector("#refactor").addEventListener("click", function () {
+	// 	home.refactor();
+	// });
+	document.querySelector("#update-cold-emails").addEventListener("click", function () {
+		home.updateColdEmails();
 	});
 };
 
@@ -68,6 +76,26 @@ home.fetchSchools = async function () {
 		data = { status: "error", content: error };
 	}
 	console.log(data.result.records);
+};
+
+home.refactor = async function () {
+	let data;
+	try {
+		data = (await axios.post("/refactor-mails"))["data"];
+	} catch (error) {
+		data = { status: "error", content: error };
+	}
+	console.log(data);
+};
+
+home.updateColdEmails = async function () {
+	let data;
+	try {
+		data = (await axios.post("/update-cold-emails"))["data"];
+	} catch (error) {
+		data = { status: "error", content: error };
+	}
+	console.log(data);
 };
 
 // END ======================================================
