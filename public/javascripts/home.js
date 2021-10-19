@@ -7,6 +7,7 @@ let home = {
 	fetchSchools: undefined,
 	refactor: undefined,
 	updateColdEmails: undefined,
+	sendColdEmails: undefined,
 };
 
 // FUNCTIONS ================================================
@@ -26,6 +27,9 @@ home.initialise = async function () {
 	// });
 	document.querySelector("#update-cold-emails").addEventListener("click", function () {
 		home.updateColdEmails();
+	});
+	document.querySelector("#send-cold-emails").addEventListener("click", function () {
+		home.sendColdEmails();
 	});
 };
 
@@ -92,6 +96,16 @@ home.updateColdEmails = async function () {
 	let data;
 	try {
 		data = (await axios.post("/update-cold-emails"))["data"];
+	} catch (error) {
+		data = { status: "error", content: error };
+	}
+	console.log(data);
+};
+
+home.sendColdEmails = async function () {
+	let data;
+	try {
+		data = (await axios.post("/send-cold-emails"))["data"];
 	} catch (error) {
 		data = { status: "error", content: error };
 	}
