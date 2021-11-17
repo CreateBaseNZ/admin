@@ -11,9 +11,7 @@ const app = express();
 
 // SERVER ===================================================
 
-app.listen(process.env.PORT, () =>
-  console.log(`Server is running at port ${process.env.PORT}`)
-);
+app.listen(process.env.PORT, () => console.log(`Server is running at port ${process.env.PORT}`));
 
 // MIDDLEWARE ===============================================
 
@@ -30,5 +28,7 @@ app.use(helmet({ contentSecurityPolicy: false }));
 
 const generalRouter = require("./routes/general.js");
 app.use(generalRouter);
+const groupRouter = require("./routes/group.js");
+app.use(groupRouter);
 
 // END ======================================================

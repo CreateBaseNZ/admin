@@ -8,6 +8,7 @@ const axios = require("axios");
 
 const router = new express.Router();
 const routeOptions = { root: path.join(__dirname, "../views") };
+if (process.env.NODE_ENV !== "production") require("dotenv").config();
 
 // ROUTES ===================================================
 

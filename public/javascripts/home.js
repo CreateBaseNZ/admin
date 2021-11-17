@@ -7,6 +7,8 @@ let home = {
 	fetchSchools: undefined,
 	refactor: undefined,
 	updateColdEmails: undefined,
+	populateUnverifiedGroups: undefined,
+	verifyGroup: undefined,
 };
 
 // FUNCTIONS ================================================
@@ -27,6 +29,12 @@ home.initialise = async function () {
 	document.querySelector("#update-cold-emails").addEventListener("click", function () {
 		home.updateColdEmails();
 	});
+	try {
+		await home.populateUnverifiedGroups();
+	} catch (error) {
+		console.log(error);
+	}
+	return;
 };
 
 home.sendNewsletter = async function () {
@@ -96,6 +104,66 @@ home.updateColdEmails = async function () {
 		data = { status: "error", content: error };
 	}
 	console.log(data);
+};
+
+home.populateUnverifiedGroups = async function () {
+	// Fetch unverified groups
+	let data;
+	try {
+		data = (await axios.post("/group/fetch-unverified"))["data"];
+	} catch (error) {
+		data = { status: "error", content: error };
+	}
+	if (data.status !== "succeeded") throw new Error("error");
+	// Render the group details to the front end
+	const element = document.querySelector("#unverified-group-list");
+	const html = `<thead>
+		<tr>
+			<th scope="col">Name</th>
+			<th scope="col">Creator</th>
+		</tr>
+		<tr>
+			<th scope="col">Location</th>
+			<th scope="col">Actions</th>
+		</tr>
+	</thead>`;
+	element.insertAdjacentHTML("beforeend", html);
+	for (let i = 0; i < data.content.length; i++) {
+		const group = data.content[i];
+		const html = `<tbody id="${group._id}">
+			<tr>
+				<td>${group.name}</td>
+				<td>${group.licenses.active.find((license) => license.role === "admin").profile.account.email}</td>
+			</tr>
+			<tr>
+				<td>${group.location.address}, ${group.location.city}, ${group.location.country}</td>
+				<td>
+					<button type="button" class="btn btn-primary" value="${group._id}" onclick="home.verifyGroup(this.value);">
+						Verify
+					</button>
+				</td>
+			</tr>
+		</tbody>`;
+		element.insertAdjacentHTML("beforeend", html);
+	}
+	return;
+};
+
+home.verifyGroup = async function (groupId) {
+	// Create the input object
+	const input = { query: { _id: groupId }, date: new Date().toString() };
+	// Fetch unverified groups
+	let data;
+	try {
+		data = (await axios.post("/group/verify", { input }))["data"];
+	} catch (error) {
+		data = { status: "error", content: error };
+	}
+	if (data.status !== "succeeded") throw new Error("error");
+	// Remove the element
+	document.querySelector(`#${groupId}`).remove();
+	// Success handler
+	return;
 };
 
 // END ======================================================
