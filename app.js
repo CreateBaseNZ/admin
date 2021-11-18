@@ -3,6 +3,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
+const passport = require("passport");
+const session = require("express-session");
 
 // VARIABLES ================================================
 
@@ -23,12 +25,16 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 // Security
 app.use(helmet({ contentSecurityPolicy: false }));
+// Session
+app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
+// Passport
+require("./configs/passport.js")(passport);
+app.use(passport.initialize());
+app.use(passport.session());
 
 // ROUTERS ==================================================
 
-const generalRouter = require("./routes/general.js");
-app.use(generalRouter);
-const groupRouter = require("./routes/group.js");
-app.use(groupRouter);
+require("./routes/general.js")(app, passport);
+require("./routes/group.js")(app, passport);
 
 // END ======================================================
