@@ -43,6 +43,11 @@ module.exports = function (app, passport) {
 	// @access    PUBLIC
 	app.get("/login", (req, res) => res.sendFile("login.html", routeOptions));
 
+	// @route     GET /dashboard
+	// @desc
+	// @access    PUBLIC
+	app.get("/dashboard", restrictPage, (req, res) => res.sendFile("dashboard.html", routeOptions));
+
 	// @route     GET /logout
 	// @desc
 	// @access    PUBLIC
@@ -155,6 +160,26 @@ module.exports = function (app, passport) {
 				await axios.post(process.env.ROUTE_URL + "/mail/admin/send-cold-emails", {
 					PRIVATE_API_KEY: process.env.PRIVATE_API_KEY,
 					ADMIN_API_KEY: process.env.ADMIN_API_KEY,
+				})
+			)["data"];
+		} catch (error) {
+			data = { status: "error", content: error };
+		}
+		// Success handler
+		return res.send(data);
+	});
+
+	// @route     POST /dashboard/fetch-profiles
+	// @desc
+	// @access    PUBLIC
+	app.post("/dashboard/fetch-profiles", restrictData, async (req, res) => {
+		// Send request to the main backend
+		let data;
+		try {
+			data = (
+				await axios.post(process.env.ROUTE_URL_DEPLOY + "/profile/retrieve", {
+					PRIVATE_API_KEY: process.env.PRIVATE_API_KEY_DEPLOY,
+					input: { query: {}, option: {} },
 				})
 			)["data"];
 		} catch (error) {

@@ -26,7 +26,14 @@ app.use(bodyParser.json());
 // Security
 app.use(helmet({ contentSecurityPolicy: false }));
 // Session
-app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
+app.use(
+	session({
+		secret: process.env.SESSION_SECRET,
+		resave: false,
+		saveUninitialized: false,
+		cookie: { maxAge: 1000 * 60 * 60 * 24 },
+	})
+);
 // Passport
 require("./configs/passport.js")(passport);
 app.use(passport.initialize());
