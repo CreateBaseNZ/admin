@@ -149,26 +149,6 @@ module.exports = function (app, passport) {
 		return res.send(data);
 	});
 
-	// @route     POST /send-cold-emails
-	// @desc
-	// @access    PUBLIC
-	app.post("/send-cold-emails", restrictData, async (req, res) => {
-		// Send request to the main backend
-		let data;
-		try {
-			data = (
-				await axios.post(process.env.ROUTE_URL + "/mail/admin/send-cold-emails", {
-					PRIVATE_API_KEY: process.env.PRIVATE_API_KEY,
-					ADMIN_API_KEY: process.env.ADMIN_API_KEY,
-				})
-			)["data"];
-		} catch (error) {
-			data = { status: "error", content: error };
-		}
-		// Success handler
-		return res.send(data);
-	});
-
 	// @route     POST /dashboard/fetch-profiles
 	// @desc
 	// @access    PUBLIC
