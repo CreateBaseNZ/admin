@@ -67,14 +67,24 @@ home.emailEducators = async function () {
 	return;
 };
 
-home.updateColdEmails = async function () {
+home.updateColdEmails = async function (element) {
+	element.disabled = true;
+	element.innerHTML = `<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+  <span class="sr-only">Loading...</span>`;
 	let data;
 	try {
 		data = (await axios.post("/update-cold-emails"))["data"];
 	} catch (error) {
 		data = { status: "error", content: error };
 	}
-	console.log(data);
+	if (data.status !== "succeeded") {
+		element.innerHTML = "Error!";
+		throw new Error("error");
+	}
+	element.disabled = false;
+	element.innerHTML = `Update and Schedule Cold Emails`;
+	// Success handler
+	return;
 };
 
 home.populateUnverifiedGroups = async function () {
@@ -85,7 +95,15 @@ home.populateUnverifiedGroups = async function () {
 	} catch (error) {
 		data = { status: "error", content: error };
 	}
-	if (data.status !== "succeeded") throw new Error("error");
+	if (data.status !== "succeeded" && data.status === "failed") {
+		if (data.content.groups !== "do not exists") {
+			window.alert("Error!");
+			throw new Error("error");
+		}
+	} else {
+		window.alert("Error!");
+		throw new Error("error");
+	}
 	// Render the group details to the front end
 	const element = document.querySelector("#unverified-group-list");
 	const html = `<thead>
@@ -101,7 +119,7 @@ home.populateUnverifiedGroups = async function () {
 	element.insertAdjacentHTML("beforeend", html);
 	for (let i = 0; i < data.content.length; i++) {
 		const group = data.content[i];
-		const html = `<tbody id="${group._id}">
+		const html = `<tbody id="body-${group._id}">
 			<tr>
 				<td>${group.name}</td>
 				<td>${group.licenses.active.find((license) => license.role === "admin").profile.account.email}</td>
@@ -109,7 +127,7 @@ home.populateUnverifiedGroups = async function () {
 			<tr>
 				<td>${group.location.address}, ${group.location.city}, ${group.location.country}</td>
 				<td>
-					<button type="button" class="btn btn-primary" value="${group._id}" onclick="home.verifyGroup(this.value);">
+					<button type="button" class="btn btn-primary" value="${group._id}" onclick="home.verifyGroup(this);">
 						Verify
 					</button>
 				</td>
@@ -120,9 +138,12 @@ home.populateUnverifiedGroups = async function () {
 	return;
 };
 
-home.verifyGroup = async function (groupId) {
+home.verifyGroup = async function (element) {
+	element.disabled = true;
+	element.innerHTML = `<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+  <span class="sr-only">Loading...</span>`;
 	// Create the input object
-	const input = { query: { _id: groupId }, date: new Date().toString() };
+	const input = { query: { _id: element.value }, date: new Date().toString() };
 	// Fetch unverified groups
 	let data;
 	try {
@@ -130,33 +151,54 @@ home.verifyGroup = async function (groupId) {
 	} catch (error) {
 		data = { status: "error", content: error };
 	}
-	if (data.status !== "succeeded") throw new Error("error");
+	if (data.status !== "succeeded") {
+		element.innerHTML = "Error!";
+		throw new Error("error");
+	}
+	element.disabled = false;
+	element.innerHTML = `Verify`;
 	// Remove the element
-	document.querySelector(`#${groupId}`).remove();
+	document.querySelector(`#body-${element.value}`).remove();
 	// Success handler
 	return;
 };
 
-home.tempSubscribeUsers = async function () {
+home.tempSubscribeUsers = async function (element) {
+	element.disabled = true;
+	element.innerHTML = `<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+  <span class="sr-only">Loading...</span>`;
 	let data;
 	try {
 		data = (await axios.get("/temp/subscribe-users"))["data"];
 	} catch (error) {
 		data = { status: "error", content: error };
 	}
-	console.log(data);
+	if (data.status !== "succeeded") {
+		element.innerHTML = "Error!";
+		throw new Error("error");
+	}
+	element.disabled = false;
+	element.innerHTML = `Subscribe Users`;
 	// Success handler
 	return;
 };
 
-home.tempNotifyUsers = async function () {
+home.tempNotifyUsers = async function (element) {
+	element.disabled = true;
+	element.innerHTML = `<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+  <span class="sr-only">Loading...</span>`;
 	let data;
 	try {
 		data = (await axios.get("/temp/notify-users"))["data"];
 	} catch (error) {
 		data = { status: "error", content: error };
 	}
-	console.log(data);
+	if (data.status !== "succeeded") {
+		element.innerHTML = "Error!";
+		throw new Error("error");
+	}
+	element.disabled = false;
+	element.innerHTML = `Notify Users`;
 	// Success handler
 	return;
 };
