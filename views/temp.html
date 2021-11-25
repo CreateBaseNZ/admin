@@ -4,20 +4,25 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard • Admin</title>
+  <title>Temp • Admin</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
-<body onload="dashboard.initialise();">
+<body onload="temp.initialise();">
   <nav class="container m-5">
     <a class="btn btn-link m-3" href="/" role="button">Home</a>
-    <a class="btn btn-primary m-3" href="/dashboard" role="button" style="pointer-events: none">Dashboard</a>
-    <a class="btn btn-link m-3" href="/temp" role="button">Temp</a>
+    <a class="btn btn-link m-3" href="/dashboard" role="button">Dashboard</a>
+    <a class="btn btn-primary m-3" href="/temp" role="button" style="pointer-events: none">Temp</a>
     <a class="btn btn-secondary m-3" href="/logout" role="button">Logout</a>
   </nav>
   <div class="container m-5">
-    <canvas id="daily-active"></canvas>
+    <h3 class="m-3">Notify Users (Temp)</h3>
+    <button type="button" class="btn btn-primary m-3" onclick="temp.tempNotifyUsers(this);">Notify Users</button>
   </div>
-  <script async src="/public/javascripts/dashboard.js"></script>
+  <div class="container m-5">
+    <h3 class="m-3">Subscribe Users (Temp)</h3>
+    <button type="button" class="btn btn-primary m-3" onclick="temp.tempSubscribeUsers(this);">Subscribe Users</button>
+  </div>
+  <script async src="/public/javascripts/temp.js"></script>
   <script src="https://cdn.jsdelivr.net/combine/npm/chart.js@3.6.0,npm/moment@2.29.1,npm/axios@0.24.0"></script>
 </body>
 </html>

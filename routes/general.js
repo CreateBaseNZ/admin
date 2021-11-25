@@ -49,6 +49,11 @@ router.get("/login", (req, res) => res.sendFile("login.html", routeOptions));
 // @access    PUBLIC
 router.get("/dashboard", restrictPage, (req, res) => res.sendFile("dashboard.html", routeOptions));
 
+// @route     GET /temp
+// @desc
+// @access    PUBLIC
+router.get("/temp", restrictPage, (req, res) => res.sendFile("temp.html", routeOptions));
+
 // @route     GET /logout
 // @desc
 // @access    PUBLIC

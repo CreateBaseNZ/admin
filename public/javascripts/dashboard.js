@@ -34,7 +34,6 @@ dashboard.renderChart = async function () {
 			const profile = profiles[j];
 			const lastVisit = moment(profile.date.visited).format("ddd, D MMM");
 			if (label === lastVisit) {
-				console.log(profile);
 				value++;
 				totalValue++;
 			}
