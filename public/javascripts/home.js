@@ -2,8 +2,6 @@
 
 let home = {
 	initialise: undefined,
-	sendNewsletter: undefined,
-	emailEducators: undefined,
 	updateColdEmails: undefined,
 	populateUnverifiedGroups: undefined,
 	verifyGroup: undefined,
@@ -12,56 +10,11 @@ let home = {
 // FUNCTIONS ================================================
 
 home.initialise = async function () {
-	// document.querySelector("#newsletter-email-submit").addEventListener("click", function () {
-	// 	home.sendNewsletter();
-	// });
-	// document.querySelector("#educator-email-submit").addEventListener("click", function () {
-	// 	home.emailEducators();
-	// });
 	try {
 		await home.populateUnverifiedGroups();
 	} catch (error) {
 		console.log(error);
 	}
-	return;
-};
-
-home.sendNewsletter = async function () {
-	// Construct the input
-	const input = {
-		group: document.querySelector("#newsletter-email-group").value,
-		subject: document.querySelector("#newsletter-email-subject").value,
-		body: document.querySelector("#newsletter-email-body").value,
-	};
-	// TODO: Perform the validation
-	// Send the request to the backend
-	let data;
-	try {
-		data = (await axios.post("/send-newsletter", { input }))["data"];
-	} catch (error) {
-		data = { status: "error", content: error };
-	}
-	console.log(data);
-	// Success handler
-	return;
-};
-
-home.emailEducators = async function () {
-	// Construct the input
-	const input = {
-		subject: document.querySelector("#educator-email-subject").value,
-		body: document.querySelector("#educator-email-body").value,
-	};
-	// TODO: Perform the validation
-	// Send the request to the backend
-	let data;
-	try {
-		data = (await axios.post("/email-educator", { input }))["data"];
-	} catch (error) {
-		data = { status: "error", content: error };
-	}
-	console.log(data);
-	// Success handler
 	return;
 };
 
@@ -106,32 +59,18 @@ home.populateUnverifiedGroups = async function () {
 	}
 	// Render the group details to the front end
 	const html = `<thead>
-		<tr>
-			<th class="p-3" scope="col">Name</th>
-		</tr>
-		<tr>
-			<th class="p-3" scope="col">Creator</th>
-		</tr>
-		<tr>
-			<th class="p-3" scope="col">Location</th>
-		</tr>
-		<tr>
-			<th class="p-3" scope="col">Actions</th>
-		</tr>
+		<tr><th class="p-3" scope="col">Name</th></tr>
+		<tr><th class="p-3" scope="col">Creator</th></tr>
+		<tr><th class="p-3" scope="col">Location</th></tr>
+		<tr><th class="p-3" scope="col">Actions</th></tr>
 	</thead>`;
 	element.innerHTML = html;
 	for (let i = 0; i < data.content.length; i++) {
 		const group = data.content[i];
 		const html = `<tbody id="body-${group._id}">
-			<tr>
-				<td class="p-3">${group.name}</td>
-			</tr>
-			<tr>
-				<td class="p-3">${group.licenses.active.find((license) => license.role === "admin").profile.account.email}</td>
-			</tr>
-			<tr>
-				<td class="p-3">${group.location.address}, ${group.location.city}, ${group.location.country}</td>
-			</tr>
+			<tr><td class="p-3">${group.name}</td></tr>
+			<tr><td class="p-3">${group.licenses.active.find((license) => license.role === "admin").profile.account.email}</td></tr>
+			<tr><td class="p-3">${group.location.address}, ${group.location.city}, ${group.location.country}</td></tr>
 			<tr>
 				<td class="p-3">
 					<button type="button" class="px-4 py-2 btn btn-primary" value="${group._id}" onclick="home.verifyGroup(this);">
