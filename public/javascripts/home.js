@@ -86,6 +86,8 @@ home.updateColdEmails = async function (element) {
 };
 
 home.populateUnverifiedGroups = async function () {
+	const element = document.querySelector("#unverified-group-list");
+	element.innerHTML = `<div class="spinner-border" role="status"></div>`;
 	// Fetch unverified groups
 	let data;
 	try {
@@ -103,29 +105,36 @@ home.populateUnverifiedGroups = async function () {
 		throw new Error("error");
 	}
 	// Render the group details to the front end
-	const element = document.querySelector("#unverified-group-list");
 	const html = `<thead>
 		<tr>
-			<th scope="col">Name</th>
-			<th scope="col">Creator</th>
+			<th class="p-3" scope="col">Name</th>
 		</tr>
 		<tr>
-			<th scope="col">Location</th>
-			<th scope="col">Actions</th>
+			<th class="p-3" scope="col">Creator</th>
+		</tr>
+		<tr>
+			<th class="p-3" scope="col">Location</th>
+		</tr>
+		<tr>
+			<th class="p-3" scope="col">Actions</th>
 		</tr>
 	</thead>`;
-	element.insertAdjacentHTML("beforeend", html);
+	element.innerHTML = html;
 	for (let i = 0; i < data.content.length; i++) {
 		const group = data.content[i];
 		const html = `<tbody id="body-${group._id}">
 			<tr>
-				<td>${group.name}</td>
-				<td>${group.licenses.active.find((license) => license.role === "admin").profile.account.email}</td>
+				<td class="p-3">${group.name}</td>
 			</tr>
 			<tr>
-				<td>${group.location.address}, ${group.location.city}, ${group.location.country}</td>
-				<td>
-					<button type="button" class="btn btn-primary" value="${group._id}" onclick="home.verifyGroup(this);">
+				<td class="p-3">${group.licenses.active.find((license) => license.role === "admin").profile.account.email}</td>
+			</tr>
+			<tr>
+				<td class="p-3">${group.location.address}, ${group.location.city}, ${group.location.country}</td>
+			</tr>
+			<tr>
+				<td class="p-3">
+					<button type="button" class="px-4 py-2 btn btn-primary" value="${group._id}" onclick="home.verifyGroup(this);">
 						Verify
 					</button>
 				</td>
