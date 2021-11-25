@@ -98,7 +98,7 @@ home.populateUnverifiedGroups = async function () {
 			window.alert("Error!");
 			throw new Error("error");
 		}
-	} else {
+	} else if (data.status !== "succeeded") {
 		window.alert("Error!");
 		throw new Error("error");
 	}
