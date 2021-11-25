@@ -4,11 +4,11 @@ let home = {
 	initialise: undefined,
 	sendNewsletter: undefined,
 	emailEducators: undefined,
-	fetchSchools: undefined,
-	refactor: undefined,
 	updateColdEmails: undefined,
 	populateUnverifiedGroups: undefined,
 	verifyGroup: undefined,
+	tempSubscribeUsers: undefined,
+	tempNotifyUsers: undefined,
 };
 
 // FUNCTIONS ================================================
@@ -20,15 +20,6 @@ home.initialise = async function () {
 	// document.querySelector("#educator-email-submit").addEventListener("click", function () {
 	// 	home.emailEducators();
 	// });
-	// document.querySelector("#fetch-schools").addEventListener("click", function () {
-	// 	home.fetchSchools();
-	// });
-	// document.querySelector("#refactor").addEventListener("click", function () {
-	// 	home.refactor();
-	// });
-	document.querySelector("#update-cold-emails").addEventListener("click", function () {
-		home.updateColdEmails();
-	});
 	try {
 		await home.populateUnverifiedGroups();
 	} catch (error) {
@@ -74,26 +65,6 @@ home.emailEducators = async function () {
 	console.log(data);
 	// Success handler
 	return;
-};
-
-home.fetchSchools = async function () {
-	let data;
-	try {
-		data = (await axios.get("https://catalogue.data.govt.nz/api/3/action/datastore_search?resource_id=20b7c271-fd5a-4c9e-869b-481a0e2453cd&limit=3000"))["data"];
-	} catch (error) {
-		data = { status: "error", content: error };
-	}
-	console.log(data.result.records);
-};
-
-home.refactor = async function () {
-	let data;
-	try {
-		data = (await axios.post("/refactor-mails"))["data"];
-	} catch (error) {
-		data = { status: "error", content: error };
-	}
-	console.log(data);
 };
 
 home.updateColdEmails = async function () {
@@ -162,6 +133,30 @@ home.verifyGroup = async function (groupId) {
 	if (data.status !== "succeeded") throw new Error("error");
 	// Remove the element
 	document.querySelector(`#${groupId}`).remove();
+	// Success handler
+	return;
+};
+
+home.tempSubscribeUsers = async function () {
+	let data;
+	try {
+		data = (await axios.get("/temp/subscribe-users"))["data"];
+	} catch (error) {
+		data = { status: "error", content: error };
+	}
+	console.log(data);
+	// Success handler
+	return;
+};
+
+home.tempNotifyUsers = async function () {
+	let data;
+	try {
+		data = (await axios.get("/temp/notify-users"))["data"];
+	} catch (error) {
+		data = { status: "error", content: error };
+	}
+	console.log(data);
 	// Success handler
 	return;
 };

@@ -41,7 +41,14 @@ app.use(passport.session());
 
 // ROUTERS ==================================================
 
-require("./routes/general.js")(app, passport);
-require("./routes/group.js")(app, passport);
+require("./routes/auth.js")(app, passport);
+const generalRouter = require("./routes/general.js");
+app.use(generalRouter);
+const groupRouter = require("./routes/group.js");
+app.use(groupRouter);
+const dashboardRouter = require("./routes/dashboard.js");
+app.use(dashboardRouter);
+const tempRouter = require("./routes/temp.js");
+app.use(tempRouter);
 
 // END ======================================================

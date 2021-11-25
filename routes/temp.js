@@ -32,49 +32,37 @@ const restrictData = (req, res, next) => {
 
 // ROUTES ===================================================
 
-// @route     POST /group/fetch-unverified
+// @route     GET /temp/subscribe-users
 // @desc
 // @access    PUBLIC
-router.post("/group/fetch-unverified", restrictData, async (req, res) => {
-	// Construct the input object
-	const input = { query: { verified: false }, option: { license: [], profile: [], account: [] } };
-	// Send request to the main backend
+router.get("/temp/notify-users", restrictData, async (req, res) => {
+	// Initialise API Keys and URL
+	const keys = { PRIVATE_API_KEY: process.env.PRIVATE_API_KEY, ADMIN_API_KEY: process.env.ADMIN_API_KEY };
+	const url = process.env.ROUTE_URL + "/temp/notify-users";
+	// Send the request to the backend
 	let data;
 	try {
-		data = (
-			await axios.post(process.env.ROUTE_URL + "/group/retrieve", {
-				PRIVATE_API_KEY: process.env.PRIVATE_API_KEY,
-				ADMIN_API_KEY: process.env.ADMIN_API_KEY,
-				input,
-			})
-		)["data"];
+		data = (await axios.post(url, { ...keys }))["data"];
 	} catch (error) {
 		data = { status: "error", content: error };
 	}
-	// Success handler
 	return res.send(data);
 });
 
-// @route     POST /group/verify
+// @route     GET /temp/subscribe-users
 // @desc
 // @access    PUBLIC
-router.post("/group/verify", restrictData, async (req, res) => {
-	// Construct the input object
-	const input = req.body.input;
-	// Send request to the main backend
+router.get("/temp/subscribe-users", restrictData, async (req, res) => {
+	// Initialise API Keys and URL
+	const keys = { PRIVATE_API_KEY: process.env.PRIVATE_API_KEY, ADMIN_API_KEY: process.env.ADMIN_API_KEY };
+	const url = process.env.ROUTE_URL + "/temp/subscribe-users";
+	// Send the request to the backend
 	let data;
 	try {
-		data = (
-			await axios.post(process.env.ROUTE_URL + "/group/school/verify", {
-				PRIVATE_API_KEY: process.env.PRIVATE_API_KEY,
-				ADMIN_API_KEY: process.env.ADMIN_API_KEY,
-				input,
-			})
-		)["data"];
+		data = (await axios.post(url, { ...keys }))["data"];
 	} catch (error) {
 		data = { status: "error", content: error };
 	}
-	// Success handler
 	return res.send(data);
 });
 
