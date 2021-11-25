@@ -157,8 +157,8 @@ module.exports = function (app, passport) {
 		let data;
 		try {
 			data = (
-				await axios.post(process.env.ROUTE_URL_DEPLOY + "/profile/retrieve", {
-					PRIVATE_API_KEY: process.env.PRIVATE_API_KEY_DEPLOY,
+				await axios.post(process.env.PROD_ROUTE_URL + "/profile/retrieve", {
+					PRIVATE_API_KEY: process.env.PROD_PRIVATE_API_KEY,
 					input: { query: {}, option: {} },
 				})
 			)["data"];
