@@ -66,15 +66,13 @@ router.get("/logout", (req, res) => {
 // @desc
 // @access    PUBLIC
 router.post("/update-cold-emails", restrictData, async (req, res) => {
+	// Initialise API Keys and URL
+	const keys = { PRIVATE_API_KEY: process.env.PRIVATE_API_KEY, ADMIN_API_KEY: process.env.ADMIN_API_KEY };
+	const url = process.env.ROUTE_URL + "/mail/admin/update-cold-emails";
 	// Send request to the main backend
 	let data;
 	try {
-		data = (
-			await axios.post(process.env.ROUTE_URL + "/mail/admin/update-cold-emails", {
-				PRIVATE_API_KEY: process.env.PRIVATE_API_KEY,
-				ADMIN_API_KEY: process.env.ADMIN_API_KEY,
-			})
-		)["data"];
+		data = (await axios.post(url, { ...keys }))["data"];
 	} catch (error) {
 		data = { status: "error", content: error };
 	}

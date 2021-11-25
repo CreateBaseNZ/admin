@@ -10,11 +10,7 @@ let home = {
 // FUNCTIONS ================================================
 
 home.initialise = async function () {
-	try {
-		await home.populateUnverifiedGroups();
-	} catch (error) {
-		console.log(error);
-	}
+	home.populateUnverifiedGroups();
 	return;
 };
 

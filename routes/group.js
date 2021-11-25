@@ -36,18 +36,15 @@ const restrictData = (req, res, next) => {
 // @desc
 // @access    PUBLIC
 router.post("/group/fetch-unverified", restrictData, async (req, res) => {
+	// Initialise API Keys and URL
+	const keys = { PRIVATE_API_KEY: process.env.PRIVATE_API_KEY, ADMIN_API_KEY: process.env.ADMIN_API_KEY };
+	const url = process.env.ROUTE_URL + "/group/retrieve";
 	// Construct the input object
 	const input = { query: { verified: false }, option: { license: [], profile: [], account: [] } };
 	// Send request to the main backend
 	let data;
 	try {
-		data = (
-			await axios.post(process.env.ROUTE_URL + "/group/retrieve", {
-				PRIVATE_API_KEY: process.env.PRIVATE_API_KEY,
-				ADMIN_API_KEY: process.env.ADMIN_API_KEY,
-				input,
-			})
-		)["data"];
+		data = (await axios.post(url, { ...keys, input }))["data"];
 	} catch (error) {
 		data = { status: "error", content: error };
 	}
@@ -59,18 +56,15 @@ router.post("/group/fetch-unverified", restrictData, async (req, res) => {
 // @desc
 // @access    PUBLIC
 router.post("/group/verify", restrictData, async (req, res) => {
+	// Initialise API Keys and URL
+	const keys = { PRIVATE_API_KEY: process.env.PRIVATE_API_KEY, ADMIN_API_KEY: process.env.ADMIN_API_KEY };
+	const url = process.env.ROUTE_URL + "/group/school/verify";
 	// Construct the input object
 	const input = req.body.input;
 	// Send request to the main backend
 	let data;
 	try {
-		data = (
-			await axios.post(process.env.ROUTE_URL + "/group/school/verify", {
-				PRIVATE_API_KEY: process.env.PRIVATE_API_KEY,
-				ADMIN_API_KEY: process.env.ADMIN_API_KEY,
-				input,
-			})
-		)["data"];
+		data = (await axios.post(url, { ...keys, input }))["data"];
 	} catch (error) {
 		data = { status: "error", content: error };
 	}
