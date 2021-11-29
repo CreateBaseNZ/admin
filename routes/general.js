@@ -62,13 +62,13 @@ router.get("/logout", (req, res) => {
 	res.redirect("/login");
 });
 
-// @route     POST /update-cold-emails
+// @route     POST /send-cold-emails
 // @desc
 // @access    PUBLIC
-router.post("/update-cold-emails", restrictData, async (req, res) => {
+router.post("/send-cold-emails", restrictData, async (req, res) => {
 	// Initialise API Keys and URL
 	const keys = { PRIVATE_API_KEY: process.env.PRIVATE_API_KEY, ADMIN_API_KEY: process.env.ADMIN_API_KEY };
-	const url = process.env.ROUTE_URL + "/mail/admin/update-cold-emails";
+	const url = process.env.ROUTE_URL + "/mail/admin/send-cold-emails";
 	// Send request to the main backend
 	let data;
 	try {

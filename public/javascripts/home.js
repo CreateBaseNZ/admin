@@ -20,7 +20,7 @@ home.updateColdEmails = async function (element) {
   <span class="sr-only">Loading...</span>`;
 	let data;
 	try {
-		data = (await axios.post("/update-cold-emails"))["data"];
+		data = (await axios.post("/send-cold-emails"))["data"];
 	} catch (error) {
 		data = { status: "error", content: error };
 	}
