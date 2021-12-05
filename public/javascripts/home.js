@@ -44,6 +44,7 @@ home.populateUnverifiedGroups = async function () {
 	} catch (error) {
 		data = { status: "error", content: error };
 	}
+	console.log(data);
 	if (data.status !== "succeeded" && data.status === "failed") {
 		if (data.content.groups !== "do not exists") {
 			window.alert("Error!");
