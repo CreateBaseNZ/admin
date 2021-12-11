@@ -64,11 +64,9 @@ home.populateUnverifiedGroups = async function () {
 	element.innerHTML = html;
 	for (let i = 0; i < data.content.length; i++) {
 		const group = data.content[i];
-		const license = group.licenses.active.find((license) => license.role === "admin");
-		const email = license.profile.account.local ? license.profile.account.local.email : license.profile.account.google.email;
 		const html = `<tbody id="body-${group._id}">
 			<tr><td class="p-3">${group.name}</td></tr>
-			<tr><td class="p-3">${email}</td></tr>
+			<tr><td class="p-3">${group.licenses.active.find((license) => license.role === "admin").profile.account.email}</td></tr>
 			<tr><td class="p-3">${group.location.address}, ${group.location.city}, ${group.location.country}</td></tr>
 			<tr>
 				<td class="p-3">
