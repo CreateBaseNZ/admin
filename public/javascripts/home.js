@@ -26,6 +26,7 @@ home.updateColdEmails = async function (element) {
 	}
 	if (data.status !== "succeeded") {
 		element.innerHTML = "Error!";
+		console.log(data);
 		throw new Error("error");
 	}
 	element.disabled = false;
