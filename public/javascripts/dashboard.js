@@ -36,6 +36,7 @@ dashboard.renderChart = async function () {
 			if (label === lastVisit) {
 				value++;
 				totalValue++;
+				console.log(profile);
 			}
 		}
 		values.unshift(value);
