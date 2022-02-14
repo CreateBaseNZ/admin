@@ -16,7 +16,7 @@ dashboard.initialise = async function () {
 };
 
 dashboard.renderChart = async function () {
-	const numberOfDays = 7;
+	const numberOfDays = 14;
 	// Fetch all of the profiles
 	let data1;
 	try {
@@ -26,6 +26,8 @@ dashboard.renderChart = async function () {
 	}
 	const profiles = data1.content;
 	let totalValue = 0;
+	let studentCount = 0;
+	let teacherCount = 0;
 	let labels = [];
 	let values = [];
 	for (let i = 0; i < numberOfDays; i++) {
@@ -44,6 +46,14 @@ dashboard.renderChart = async function () {
 			if (label === lastVisit) {
 				value++;
 				totalValue++;
+				for (let l = 0; l < profile.licenses.length; l++) {
+					const role = profile.licenses[l].role;
+					if (role === "admin" || role === "teacher") {
+						teacherCount++;
+					} else if (role === "student") {
+						studentCount++;
+					}
+				}
 				dashboard.userDetail(profile);
 			}
 		}
@@ -52,7 +62,7 @@ dashboard.renderChart = async function () {
 	}
 	const data = {
 		labels: labels,
-		datasets: [{ label: `${totalValue} unique users visited in the last ${numberOfDays} days`, data: values }],
+		datasets: [{ label: `${totalValue} unique users (${teacherCount} teachers and ${studentCount} students) visited in the last ${numberOfDays} days`, data: values }],
 	};
 	const config = {
 		type: "bar",
