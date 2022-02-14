@@ -3,6 +3,7 @@
 let dashboard = {
 	initialise: undefined,
 	renderChart: undefined,
+	userDetail: undefined,
 
 	dailyActive: undefined,
 };
@@ -29,14 +30,21 @@ dashboard.renderChart = async function () {
 	let values = [];
 	for (let i = 0; i < numberOfDays; i++) {
 		const label = moment().subtract(i, "days").format("ddd, D MMM");
+		document.querySelector("#user-detail").insertAdjacentHTML("beforeend", `<h1>${label}</h1>`);
 		let value = 0;
 		for (let j = 0; j < profiles.length; j++) {
 			const profile = profiles[j];
+			let skip = false;
+			for (let k = 0; k < profile.licenses.length; k++) {
+				const license = profile.licenses[k];
+				if (license.group.name === "CreateBase School") skip = true;
+			}
+			if (skip) continue;
 			const lastVisit = moment(profile.date.visited).format("ddd, D MMM");
 			if (label === lastVisit) {
 				value++;
 				totalValue++;
-				console.log(profile);
+				dashboard.userDetail(profile);
 			}
 		}
 		values.unshift(value);
@@ -53,6 +61,40 @@ dashboard.renderChart = async function () {
 	};
 	dashboard.dailyActive = new Chart(document.getElementById("daily-active"), config);
 	return;
+};
+
+dashboard.userDetail = function (profile) {
+	let groups = "";
+	for (let i = 0; i < profile.licenses.length; i++) {
+		const license = profile.licenses[i];
+		if (groups === "") {
+			groups += `${license.group.name} (${license.role})`;
+		} else {
+			groups += `, ${license.group.name} (${license.role})`;
+		}
+	}
+	if (groups !== "") {
+		groups += ".";
+	} else {
+		groups += "No group.";
+	}
+	let email;
+	if (profile.account.local) {
+		email = profile.account.local.email;
+	} else if (profile.account.google) {
+		email = profile.account.google.email;
+	}
+	const html = `
+<div>
+	<p>-----------------------------------------------------</p>
+	<p>${profile.name.first} ${profile.name.last} (${email})</p>
+	<p>${groups}</p>
+	<p>Created: ${moment(profile.date.created).format("ddd, D MMM YY, hh:mm a")} | Modified: ${moment(profile.date.modified).format("ddd, D MMM YY, hh:mm a")} | Visited: ${moment(
+		profile.date.visited
+	).format("ddd, D MMM YY, hh:mm a")}</p>
+</div>
+`;
+	return document.querySelector("#user-detail").insertAdjacentHTML("beforeend", html);
 };
 
 // END ======================================================
