@@ -16,7 +16,7 @@ dashboard.initialise = async function () {
 };
 
 dashboard.renderChart = async function () {
-	const numberOfDays = 14;
+	const numberOfDays = 7;
 	// Fetch all of the profiles
 	let data1;
 	try {
