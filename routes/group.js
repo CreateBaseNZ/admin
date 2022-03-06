@@ -37,8 +37,8 @@ const restrictData = (req, res, next) => {
 // @access    PUBLIC
 router.post("/group/fetch-unverified", restrictData, async (req, res) => {
 	// Initialise API Keys and URL
-	const keys = { PRIVATE_API_KEY: process.env.PRIVATE_API_KEY, ADMIN_API_KEY: process.env.ADMIN_API_KEY };
-	const url = process.env.ROUTE_URL + "/group/retrieve";
+	const keys = { API_KEY_PRIVATE: process.env.API_KEY_PRIVATE, API_KEY_ADMIN: process.env.API_KEY_ADMIN };
+	const url = process.env.PREFIX_BACKEND + "/group/retrieve";
 	// Construct the input object
 	const input = { query: { verified: false }, option: { license: [], profile: [], account: [] } };
 	// Send request to the main backend
@@ -57,8 +57,8 @@ router.post("/group/fetch-unverified", restrictData, async (req, res) => {
 // @access    PUBLIC
 router.post("/group/verify", restrictData, async (req, res) => {
 	// Initialise API Keys and URL
-	const keys = { PRIVATE_API_KEY: process.env.PRIVATE_API_KEY, ADMIN_API_KEY: process.env.ADMIN_API_KEY };
-	const url = process.env.ROUTE_URL + "/group/school/verify";
+	const keys = { API_KEY_PRIVATE: process.env.API_KEY_PRIVATE, API_KEY_ADMIN: process.env.API_KEY_ADMIN };
+	const url = process.env.PREFIX_BACKEND + "/group/school/verify";
 	// Construct the input object
 	const input = req.body.input;
 	// Send request to the main backend

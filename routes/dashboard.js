@@ -37,10 +37,10 @@ const restrictData = (req, res, next) => {
 // @access    PUBLIC
 router.post("/dashboard/fetch-profiles", restrictData, async (req, res) => {
 	// Initialise API Keys and URL
-	const keys = { PRIVATE_API_KEY: process.env.PROD_PRIVATE_API_KEY };
+	const keys = { API_KEY_PRIVATE: process.env.API_KEY_PRIVATE };
 	const input = { query: {}, option: {} };
 	// Send request to the main backend
-	const url1 = process.env.PROD_ROUTE_URL + "/profile/retrieve";
+	const url1 = process.env.PREFIX_BACKEND + "/profile/retrieve";
 	const input1 = { query: {}, option: { account: [] } };
 	let data1;
 	try {
@@ -50,23 +50,35 @@ router.post("/dashboard/fetch-profiles", restrictData, async (req, res) => {
 	}
 	if (data1.status !== "succeeded") return res.send({ status: "error", content: data1.content });
 	// Retrieve licenses
-	const url2 = process.env.PROD_ROUTE_URL + "/license/retrieve";
+	const url2 = process.env.PREFIX_BACKEND + "/license/retrieve";
 	let data2;
 	try {
 		data2 = (await axios.post(url2, { ...keys, input }))["data"];
 	} catch (error) {
 		data2 = { status: "error", content: error };
 	}
-	if (data2.status !== "succeeded") return res.send({ status: "error", content: data2.content });
+	if (data2.status !== "succeeded") {
+		if (data2.status !== "failed") {
+			return res.send({ status: "error", content: data2.content });
+		} else if (data2.content.licenses !== "do not exist") {
+			return res.send({ status: "error", content: data2.content });
+		}
+	}
 	// Retrieve groups
-	const url3 = process.env.PROD_ROUTE_URL + "/group/retrieve";
+	const url3 = process.env.PREFIX_BACKEND + "/group/retrieve";
 	let data3;
 	try {
 		data3 = (await axios.post(url3, { ...keys, input }))["data"];
 	} catch (error) {
 		data3 = { status: "error", content: error };
 	}
-	if (data3.status !== "succeeded") return res.send({ status: "error", content: data3.content });
+	if (data3.status !== "succeeded") {
+		if (data3.status !== "failed") {
+			return res.send({ status: "error", content: data3.content });
+		} else if (data3.content.groups !== "do not exists") {
+			return res.send({ status: "error", content: data3.content });
+		}
+	}
 	// For each license assign the group
 	let licenses = [];
 	for (let i = 0; i < data2.content.length; i++) {

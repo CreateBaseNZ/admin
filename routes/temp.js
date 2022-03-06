@@ -37,8 +37,8 @@ const restrictData = (req, res, next) => {
 // @access    PUBLIC
 router.get("/temp/notify-users", restrictData, async (req, res) => {
 	// Initialise API Keys and URL
-	const keys = { PRIVATE_API_KEY: process.env.PRIVATE_API_KEY, ADMIN_API_KEY: process.env.ADMIN_API_KEY };
-	const url = process.env.ROUTE_URL + "/temp/notify-users";
+	const keys = { API_KEY_PRIVATE: process.env.API_KEY_PRIVATE, API_KEY_ADMIN: process.env.API_KEY_ADMIN };
+	const url = process.env.PREFIX_BACKEND + "/temp/notify-users";
 	// Send the request to the backend
 	let data;
 	try {
@@ -54,8 +54,8 @@ router.get("/temp/notify-users", restrictData, async (req, res) => {
 // @access    PUBLIC
 router.get("/temp/subscribe-users", restrictData, async (req, res) => {
 	// Initialise API Keys and URL
-	const keys = { PRIVATE_API_KEY: process.env.PRIVATE_API_KEY, ADMIN_API_KEY: process.env.ADMIN_API_KEY };
-	const url = process.env.ROUTE_URL + "/temp/subscribe-users";
+	const keys = { API_KEY_PRIVATE: process.env.API_KEY_PRIVATE, API_KEY_ADMIN: process.env.API_KEY_ADMIN };
+	const url = process.env.PREFIX_BACKEND + "/temp/subscribe-users";
 	// Send the request to the backend
 	let data;
 	try {

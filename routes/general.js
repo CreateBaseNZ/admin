@@ -67,8 +67,8 @@ router.get("/logout", (req, res) => {
 // @access    PUBLIC
 router.get("/send-cold-emails", restrictData, async (req, res) => {
 	// Initialise API Keys and URL
-	const keys = { PRIVATE_API_KEY: process.env.PRIVATE_API_KEY, ADMIN_API_KEY: process.env.ADMIN_API_KEY };
-	const url = process.env.ROUTE_URL + "/mail/admin/send-cold-emails";
+	const keys = { API_KEY_PRIVATE: process.env.API_KEY_PRIVATE, API_KEY_ADMIN: process.env.API_KEY_ADMIN };
+	const url = process.env.PREFIX_BACKEND + "/mail/admin/send-cold-emails";
 	// Send request to the main backend
 	let data;
 	try {
